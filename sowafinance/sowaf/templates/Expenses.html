@@ -1,0 +1,378 @@
+{% load static %}
+{% include 'includes/navbar.html' %}
+{% include 'includes/sidebar.html' %}
+    <div class="action">
+      <H1>EXPENSES</H1>
+      <div class="search_bar">
+        <input type="text" placeholder="Search Clients" />
+      </div>
+      <div class="dropdown">
+        <button class="button dropdown-toggle" style="display: flex; align-items: center;">
+          <span class="button_text">New Transactions</span>
+          <span class="button_icon" style="margin-left: 8px;">
+            <i class='bx bx-chevron-down'></i>
+          </span>
+        </button>
+        <div class="dropdown-menu" style="display: none; position: absolute; background: white; border: 1px solid #ccc; border-radius: 4px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <a href="./time_activity_form.html" class="dropdown-item">Time activity</a>
+          <a href="./bill_form.html" class="dropdown-item">Bill</a>
+          <a href="./expenses_form.html" class="dropdown-item">Expense</a>
+          <a href="./cheque_form.html" class="dropdown-item">Cheque</a>
+          <a href="./purchase_order_form.html" class="dropdown-item">Purchase Order</a>
+          <a href="./supplier_credit_form.html" class="dropdown-item">Supplier credit</a>
+          <a href="./Pay_down_credit_form.html" class="dropdown-item">Pay down credit card</a>
+          <a href="./import_bills_form.html" class="dropdown-item">Import bills</a>
+          <a href="./credit_card_credit_form.html" class="dropdown-item">Credit Card Credit</a>
+        </div>
+      </div>
+      
+      <script>
+        const toggleBtn = document.querySelector('.dropdown-toggle');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+      
+        toggleBtn.addEventListener('click', () => {
+          dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+      
+        // Optional: Hide dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+          if (!event.target.closest('.dropdown')) {
+            dropdownMenu.style.display = 'none';
+          }
+        });
+      </script>
+      
+      <style>
+        .dropdown-item {
+          display: block;
+          padding: 10px 15px;
+          text-decoration: none;
+          color: #333;
+        }
+      
+        .dropdown-item:hover {
+          background-color: #f5f5f5;
+        }
+      
+        .button {
+          background-color: #39B54B;
+          color: white;
+          border: none;
+          padding: 10px 16px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+      
+        .button:hover {
+          background-color: #2a8b3b;
+        }
+      </style>
+      
+
+        <button class="button">
+          <span class="button_text">EXPORT</span>
+          <span class="button_icon">
+            <i class='bx bx-export' ></i>
+          </span>
+        </button>
+        <button class="button">
+          <span class="button_text">PRINT</span>
+          <span class="button_icon">
+            <i class='bx bx-printer' ></i>
+          </span>
+        </button>
+        <button class="button">
+          <span class="button_text">CUSTOMIZE</span>
+          <span class="button_icon">
+            <i class='bx bx-customize' ></i>
+          </span>
+        </button>
+    </div>
+    <div class="main_body">
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>ICON</th>
+            <th>DATE</th>
+            <th>TYPE</th>
+            <th>NO.</th>
+            <th>PAYEE</th>
+            <th>CATEGORY</th>
+            <th>TOTAL BEFORE SALES TAX</th>
+            <th>SALES TAX</th>
+            <th>TOTAL</th>
+            <th>APPROVAL STATUS</th>
+            <th>OPERATIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td><i class='bx bx-user-circle'></i></td>
+            <td>24/02/2025</td>
+            <td>SALARY</td>
+            <td>002</td>
+            <td>Nyeroto Jonathan</td>
+            <td>JUNE</td>
+            <td>2,600,000</td>
+            <td>600,000</td>
+            <td>2,000,000</td>
+            <td>APPROVED</td>
+            <td>
+              <span>
+                <i class='bx bx-bullseye' ></i>
+                <i class='bx bxs-edit' ></i>
+                <i class='bx bx-trash' ></i>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+ {% include 'includes/footer.html' %}

@@ -1,0 +1,72 @@
+{% load static %}
+{% include 'includes/navbar.html' %}
+{% include 'includes/sidebar.html' %}
+    <div class="action">
+      <H1>EMPLOYEES</H1>
+      <div class="search_bar">
+        <input type="text" placeholder="Search Employees" />
+      </div>
+      <a href="{% url 'add-employee' %}" style="text-decoration: none;">
+        <button class="button">
+          <span class="button_text">ADD NEW</span>
+          <span class="button_icon">
+            <i class='bx bx-folder-plus'></i>
+          </span>
+        </button>
+      </a>
+
+        <button class="button">
+          <span class="button_text">SETTINGS</span>
+          <span class="button_icon">
+            <i class='bx bx-cog' ></i>
+          </span>
+        </button>
+    </div>
+    <div class="main_body">
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>PROFILE PICTURE</th>
+            <th>ID</th>
+            <th>DISPLAY NAME</th>
+            <th>PHONE</th>
+            <th>EMAIL</th>
+            <th>STATUS</th>
+            <th>OPERATIONS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for employee in employees %}
+          <tr>
+            <td>
+            {%if employee.profile_picture %}
+              <img src=" {{ employee.profile_picture.url }}" alt="picture" style="width: 40px; height: 40px; border-radius: 50%;">
+              {% else %}
+              <i class='bx bx-user-circle'></i>
+              {% endif %}
+            </td>
+            <td>{{employee.id|stringformat:'03d'}}</td>
+            <td>{{employee.first_name}} {{employee.last_name}} </td>
+            <td>{{employee.phone_number}}</td>
+            <td>{{employee.email_address}}</td>
+            <td>{{employee.status}}</td>
+            <td>
+              <a href="{% url 'edit-employee' employee.id %}" title="Edit" style="color:green;">
+              <i class='bx bxs-edit'></i> 
+              </a>
+                <a href="{% url 'delete-employee' employee.id %}" title="Delete" onclick="return confirm('Are you sure you want to delete this customer?');">
+               <i class='bx bxs-trash' style="color:green; margin-left: 10px;"></i>
+               </a>
+            </i></td>
+            <td>Retire/inactive</td>
+          </tr>
+           {% empty %}    
+        <tr>
+      <td colspan="6">No customers available.</td>
+    </tr>
+         {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% include 'includes/footer.html' %}

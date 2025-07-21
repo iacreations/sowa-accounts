@@ -1,0 +1,305 @@
+{% load static %}
+{% include 'includes/navbar.html' %}
+{% include 'includes/sidebar.html' %}
+    <div class="action">
+      <H1>SALES</H1>
+      <div class="search_bar">
+        <input type="text" placeholder="Search Home" />
+      </div>
+      <div class="dropdown-wrapper">
+        <button class="button">
+          <span class="button_text">New Transactions</span>
+          <span class="button_icon"><i class='bx bx-chevron-down'></i></span>
+        </button>
+        <div class="dropdown-content">
+          <a href="{% url 'add-invoice' %}">Invoice</a>
+          <a href="{% url 'add-receipt' %}">Receipt</a>
+          <a href="{% url 'add-payments' %}">Receive payment</a>
+        </div>
+      </div>
+
+      <a href="{% url 'add-products' %}" style="text-decoration: none;">
+        <button class="button" style="width: fit-content;">
+        <span class="button_text">New Products/Services</span>
+        <span class="button_icon">
+          <i class='bx bx-folder-plus'></i>
+        </span>
+      </button>
+      </a>
+        <button class="button">
+          <span class="button_text">CUSTOMIZE</span>
+          <span class="button_icon">
+            <i class='bx bxs-customize' ></i>
+          </span>
+        </button> 
+
+
+    </div>
+    <div class="main_body">
+
+      <div class="tabs">
+        <input type="radio" class="tabs_radio" name="tabs-example" id="tab1" checked>
+        <label for="tab1" class="tabs_label">Sales Overview</label>
+          <div class="tab-content">
+            <div class="sales-overview">
+              <div id="Overview">              
+                <div class="invoice">INVOICES</div>
+                <div class="income-overtime">INCOME OVERTIME</div>
+                <div class="estimates">ESTIMATES</div>
+              </div>
+
+              <div class="all-sales">
+                <h3>ALL SALES</h3>
+                <table class="content-table">
+                  <thead>
+                    <tr>
+                      <th>PROFILE ICON</th>
+                      <th>DATE</th>
+                      <th>TYPE</th>
+                      <th>NO.</th>
+                      <th>CUSTOMER</th>
+                      <th>MEMO</th>
+                      <th>AMOUNT</th>
+                      <th>STATUS</th>
+                      <th>ACTIONS <i class='bx bxs-down-arrow' ></i></th>
+                      <th>OPERATIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>3/3/2025</td>
+                      <td>PRODUCT</td>
+                      <td>001</td>
+                      <td>Nyeroto</td>
+                      <td>223</td>
+                      <td>13,000,000</td>
+                      <td>PAID</td>
+                      <td>Receive payment</td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>3/3/2025</td>
+                      <td>PRODUCT</td>
+                      <td>001</td>
+                      <td>Nyeroto</td>
+                      <td>223</td>
+                      <td>13,000,000</td>
+                      <td>PAID</td>
+                      <td>Receive payment</td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>3/3/2025</td>
+                      <td>PRODUCT</td>
+                      <td>001</td>
+                      <td>Nyeroto</td>
+                      <td>223</td>
+                      <td>13,000,000</td>
+                      <td>PAID</td>
+                      <td>Receive payment</td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>3/3/2025</td>
+                      <td>PRODUCT</td>
+                      <td>001</td>
+                      <td>Nyeroto</td>
+                      <td>223</td>
+                      <td>13,000,000</td>
+                      <td>PAID</td>
+                      <td>Receive payment</td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>3/3/2025</td>
+                      <td>PRODUCT</td>
+                      <td>001</td>
+                      <td>Nyeroto</td>
+                      <td>223</td>
+                      <td>13,000,000</td>
+                      <td>PAID</td>
+                      <td>Receive payment</td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <input type="radio" class="tabs_radio" name="tabs-example" id="tab2">
+          <label for="tab2" class="tabs_label">Sales Activities</label>
+            <div class="tab-content">
+              <div class="sales-activities" id="Overview">
+                <div class="customer">Customer</div>
+                <div class="invoice">Invoice</div>
+                <div class="recurring-invoice">Recurring invoice</div>
+                <div class="sales-receipts">Sales Receipts</div>
+                <div class="receive-payment">Receive payment</div>
+                <div class="bank-deposit">Bank Deposit</div>
+                <div class="create-statement">Create Statement</div>
+              </div>
+            </div>
+
+            <input type="radio" class="tabs_radio" name="tabs-example" id="tab3">
+            <label for="tab3" class="tabs_label">Products and Services</label>
+              <div class="tab-content">
+                <table class="content-table">
+                  <thead>
+                    <tr>
+                      <th>PROFILE ICON</th>
+                      <th>NAME</th>
+                      <th>SKU</th>
+                      <th>TYPE</th>
+                      <th>SALES DESCRIPTION</th>
+                      <th>SALES PRICE</th>
+                      <th>RATE</th>
+                      <th>ACTIONS <i class='bx bxs-down-arrow' ></i></th>
+                      <th>OPERATIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                    <tr>
+                      <td><i class='bx bx-user-circle'></i></td>
+                      <td>Nyeroto Jonathan</td>
+                      <td>9830673924213</td>
+                      <td>Service</td>
+                      <td>Websites development</td>
+                      <td>5,000,000</td>
+                      <td>5,000,000</td>
+                      <td>Make invoice</i></td>
+                      <td><i class='bx bx-edit-alt' ></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+      </div>
+    </div>
+ {% include 'includes/footer.html' %}
