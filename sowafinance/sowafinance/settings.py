@@ -80,10 +80,8 @@ WSGI_APPLICATION = 'sowafinance.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sowaaccounts',
-        'USER': 'sowa',
-        'PASSWORD': 'sowafinance',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
 
