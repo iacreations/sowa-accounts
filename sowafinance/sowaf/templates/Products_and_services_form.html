@@ -108,13 +108,13 @@
     <a href="./Sales.html"><button class="btn btn-cancel">Cancel</button></a>
     <button class="btn btn-light-green" onclick="window.print()">Print / Preview</button>
     <div class="dropdown">
-      <button class="btn btn-green">Save ▼</button>
-      <div class="dropdown-menu">
-        <button onclick="saveForm('save')">Save</button>
-        <button onclick="saveForm('saveNew')">Save & New</button>
-        <button onclick="saveForm('saveClose')">Save & Close</button>
-      </div>
-    </div>
+          <button type="button" class="btn btn-green">Save ▼</button>
+          <div class="dropdown-menu">
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save">Save</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&new">Save & New</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&close">Save & Close</button>
+          </div>
+        </div>
   </div>
 </div>
 

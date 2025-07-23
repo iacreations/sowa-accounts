@@ -292,11 +292,14 @@
       <div>
         <a href="./Expenses.html"><button class="btn-cancel">Cancel</button></a>
       </div>
-      <div>
-        <button class="btn-primary">Save</button>
-        <button class="btn-primary">Save & New</button>
-        <button class="btn-primary">Save & Close</button>
-      </div>
+     <div class="dropdown">
+          <button type="button" class="btn btn-green">Save ▼</button>
+          <div class="dropdown-menu">
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save">Save</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&new">Save & New</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&close">Save & Close</button>
+          </div>
+        </div>
     </div>
   </div>
 

@@ -71,6 +71,12 @@ def add_assests(request):
         asset = Newasset(asset_name=asset_name,asset_tag=asset_tag,asset_category=asset_category,asset_description=asset_description,department=department,custodian=custodian,asset_status=asset_status,purchase_price=purchase_price,purchase_date=purchase_date,supplier=supplier,warranty=warranty,funding_source=funding_source,life_span=life_span,depreciation_method=depreciation_method,residual_value=residual_value,accumulated_depreciation=accumulated_depreciation,remaining_value=remaining_value,asset_account=asset_account,capitalization_date=capitalization_date,cost_center=cost_center,asset_condition=asset_condition,maintenance_schedule=maintenance_schedule,insurance_details=insurance_details,notes=notes,asset_attachments=asset_attachments,)
 
         asset.save()
+                        # adding button save actions
+        save_action = request.POST.get('save_action')
+        if save_action == 'save&new':
+            return redirect('add-asset')
+        elif save_action == 'save&close':
+            return redirect('assets')
 
     return render(request, 'assets_form.html', {})
 # editing assets
