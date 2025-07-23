@@ -71,7 +71,7 @@ def add_assests(request):
         asset = Newasset(asset_name=asset_name,asset_tag=asset_tag,asset_category=asset_category,asset_description=asset_description,department=department,custodian=custodian,asset_status=asset_status,purchase_price=purchase_price,purchase_date=purchase_date,supplier=supplier,warranty=warranty,funding_source=funding_source,life_span=life_span,depreciation_method=depreciation_method,residual_value=residual_value,accumulated_depreciation=accumulated_depreciation,remaining_value=remaining_value,asset_account=asset_account,capitalization_date=capitalization_date,cost_center=cost_center,asset_condition=asset_condition,maintenance_schedule=maintenance_schedule,insurance_details=insurance_details,notes=notes,asset_attachments=asset_attachments,)
 
         asset.save()
-                        # adding button save actions
+        # adding button save actions
         save_action = request.POST.get('save_action')
         if save_action == 'save&new':
             return redirect('add-asset')
@@ -252,6 +252,12 @@ def add_client(request):
         # saving the client
         client = Newclient(logo=logo,company=company,phone=phone,company_email=company_email,address=address,country=country,reg_number=reg_number,start_date=start_date,contact_name=contact_name,position=position,contact=contact,contact_email=contact_email,tin=tin,credit_limit=credit_limit,payment_terms=payment_terms,currency=currency,industry=industry,status=status,notes=notes)
         client.save()
+        # adding button save actions
+        save_action = request.POST.get('save_action')
+        if save_action == 'save&new':
+            return redirect('add-client')
+        elif save_action == 'save&close':
+            return redirect('clients')
 
     return render(request, 'Clients_form.html', {})
 # editing the client
@@ -336,6 +342,12 @@ def add_employees(request):
         employee = Newemployee(first_name=first_name,last_name=last_name,gender=gender,dob=dob,nationality=nationality,nin_number=nin_number,tin_number=tin_number,profile_picture=profile_picture,phone_number=phone_number,email_address=email_address,residential_address=residential_address,emergency_person=emergency_person,emergency_contact=emergency_contact,relationship=relationship,job_title=job_title,department=department,employment_type=employment_type,status=status,hire_date=hire_date,supervisor=supervisor,salary=salary,payment_frequency=payment_frequency,payment_method=payment_method,bank_name=bank_name,bank_account=bank_account,bank_branch=bank_branch,nssf_number=nssf_number,insurance_provider=insurance_provider,taxable_allowances=taxable_allowances,intaxable_allowances=intaxable_allowances,additional_notes=additional_notes,doc_attachments=doc_attachments,)
 
         employee.save()
+        # adding button save actions
+        save_action = request.POST.get('save_action')
+        if save_action == 'save&new':
+            return redirect('add-employee')
+        elif save_action == 'save&close':
+            return redirect('employees')
     
     return render(request, 'employees_form.html', {})
 
@@ -473,7 +485,12 @@ def add_invoice(request):
                     tax=(str(i) in taxes)  # Adjust logic as needed
                 )
                 item.save()
-
+                # adding button save actions
+                save_action = request.POST.get('save_action')
+                if save_action == 'save&new':
+                    return redirect('add-invoice')
+                elif save_action == 'save&close':
+                    return redirect('sales')
             return redirect('sales')
 
         except Newcustomer.DoesNotExist:
