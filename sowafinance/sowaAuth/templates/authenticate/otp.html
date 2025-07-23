@@ -1,0 +1,26 @@
+
+  <div class="container">
+    <div class="logo">
+      <img src="{% static 'sowaf/images/yo-logo.png' %}" alt="YoAccountant">
+    </div>
+    {% if messages %}
+      {% for message in messages %}
+        {% if messages.tags == 'error' %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% else %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+     <!-- OTP Form -->
+     <form id="otp-form" action="" method="POST">
+        {% csrf_token %}
+      <div class="input-group">
+        <i class='bx bx-lock-alt'></i>
+        <input type="text" placeholder="Enter OTP" required>
+      </div>
+      <div class="btn">VERIFY OTP</div>
+      <div class="footer-link"><a href="#">Resend OTP</a></div>
+    </form>
+
+   

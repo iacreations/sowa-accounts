@@ -20,9 +20,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('sowaf.urls')),
+    path('', include('sowaAuth.urls')),
     path('sowaAuth/', include('django.contrib.auth.urls')), 
-    path('sowaAuth/', include('sowaAuth.urls')),
+    path('sowaf/', include('sowaf.urls')),
+    
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

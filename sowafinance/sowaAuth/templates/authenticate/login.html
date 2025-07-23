@@ -1,0 +1,42 @@
+
+  <div class="container">
+    <div class="logo">
+      <img src="{% static 'sowaf/images/yo-logo.png' %}" alt="YoAccountant">
+    </div>
+    {% if messages %}
+      {% for message in messages %}
+        {% if messages.tags == 'error' %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% else %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    <div class="tabs">
+      <span id="login-tab" class="active">Login</span>
+      <span id="signup-tab">Sign up</span>        
+    </div>
+     
+    <!-- Login Form -->
+    <form id="login-form" action="" method="POST">
+                 {% csrf_token %} 
+      <div class="input-group">
+        <i class='bx bx-user'></i>
+        <input type="text" placeholder="Username, Email or Phone number" name="username" required>
+      </div>
+      <div class="input-group">
+        <i class='bx bx-lock-alt'></i>
+        <input type="password" placeholder="Password" name="password" required>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox"> Remember me
+      </div>
+      <button type="submit" class="btn">LOGIN</button>
+      <div class="footer-link"><a href="#">Forgot your password?</a></div>
+    </form>
+
+    
+
+    
+
+ 
