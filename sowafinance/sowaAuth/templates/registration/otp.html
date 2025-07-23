@@ -1,4 +1,5 @@
-
+{% load static %}
+{% include 'includes/header.html' %}
   <div class="container">
     <div class="logo">
       <img src="{% static 'sowaf/images/yo-logo.png' %}" alt="YoAccountant">
@@ -13,14 +14,14 @@
       {% endfor %}
     {% endif %}
      <!-- OTP Form -->
-     <form id="otp-form" action="" method="POST">
+     <form id="otp-form" action="{% url 'sowaAuth:otp' %}" method="POST">
         {% csrf_token %}
       <div class="input-group">
         <i class='bx bx-lock-alt'></i>
-        <input type="text" placeholder="Enter OTP" required>
+        <input type="text" placeholder="Enter OTP" name="otp" required>
       </div>
-      <div class="btn">VERIFY OTP</div>
+       <button type="submit" class="btn">SIGN UP</button>
       <div class="footer-link"><a href="#">Resend OTP</a></div>
     </form>
-
+{% include 'includes/footer.html' %}
    

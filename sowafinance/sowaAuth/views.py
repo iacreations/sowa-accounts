@@ -69,3 +69,58 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('sowaAuth:login')
+# getting the otp
+def verify_otp(request):
+    return render(request, 'registration/otp.html')
+
+
+# def login_user(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             # ✅ Don't log in yet — generate OTP and store info
+#             otp = str(random.randint(100000, 999999))
+#             request.session['pending_user_id'] = user.id
+#             request.session['otp'] = otp
+
+#             # ✅ Send OTP to user's email (adjust to send SMS if needed)
+#             send_mail(
+#                 'Your Login OTP',
+#                 f'Your OTP is: {otp}',
+#                 'no-reply@sowa.com',
+#                 [user.email],
+#                 fail_silently=False
+#             )
+
+#             return redirect('sowaAuth:otp')
+#         else:
+#             messages.error(request, "Invalid credentials")
+
+#     return render(request, 'registration/login.html')
+# # getting the otp
+
+# User = get_user_model()
+
+# def verify_otp(request):
+#     if request.method == 'POST':
+#         entered_otp = request.POST.get('otp')
+#         actual_otp = request.session.get('otp')
+#         user_id = request.session.get('pending_user_id')
+
+#         if entered_otp == actual_otp and user_id:
+#             user = User.objects.get(id=user_id)
+#             login(request, user)
+
+#             # ✅ Clean up session
+#             del request.session['otp']
+#             del request.session['pending_user_id']
+
+#             messages.success(request, "OTP verified. You are now logged in.")
+#             return redirect('sowaf:home')
+#         else:
+#             messages.error(request, "Invalid OTP")
+
+#     return render(request, 'registration/otp.html')

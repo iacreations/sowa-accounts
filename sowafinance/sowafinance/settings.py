@@ -154,3 +154,5 @@ LOGIN_URL = 'sowaAuth:login'
 AUTH_USER_MODEL = 'sowaAuth.Newuser'
 
 LOGIN_REDIRECT_URL = reverse_lazy('sowaf:home')
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
