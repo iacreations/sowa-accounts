@@ -234,3 +234,43 @@ class Newasset(models.Model):
 
     def __str__(self):
         return f'{self.asset_name}-{self.asset_category}-{self.department}-{self.custodian}'
+
+class Newinvoice(models.Model):
+    invoice_date = models.DateField(null=True, blank=True)
+    invoice_due = models.DateField(null=True, blank=True)
+    customer = models.ForeignKey(Newcustomer, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=255, null=True, blank=True)
+    billing_address = models.CharField(max_length=255, null=True, blank=True)
+    shipping_address = models.CharField(max_length=255, null=True, blank=True)
+    terms = models.CharField(max_length=255, null=True, blank=True)
+    sales_rep = models.CharField(max_length=255, null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    tags = models.CharField(max_length=255, null=True, blank=True)
+    po_number = models.PositiveIntegerField(null=True, blank=True)
+    item_details = models.CharField(max_length=255, null=True, blank=True)
+    memo = models.CharField(max_length=255, null=True, blank=True)
+    customs_notes = models.CharField(max_length=255, null=True, blank=True)
+    attachments = models.FileField(null=True, blank=True)
+    sub_total = models.DecimalField(decimal_places=2, max_digits=255,default='',null=True, blank=True)
+    discount = models.DecimalField(decimal_places=2, max_digits=255,default='',null=True, blank=True)
+    shipping = models.CharField(max_length=255, null=True, blank=True)
+    total_due = models.DecimalField(decimal_places=2, max_digits=255,default='',null=True, blank=True)
+
+    class Meta:
+        ordering =['invoice_date']
+
+    def __str__(self):
+        return f'Customer={self.customer.customer_name} | invoice date- {self.invoice_date} | Invoice due date- {self.invoice_due} | sales_representative- {self.sales_rep}'
+    
+class InvoiceItem(models.Model):
+    invoice = models.ForeignKey(Newinvoice, on_delete=models.CASCADE, related_name='items')
+    product = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    qty = models.PositiveIntegerField()
+    rate = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    billable = models.BooleanField(default=False)
+    tax = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.product} x {self.qty} for Invoice {self.invoice.id}"

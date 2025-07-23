@@ -42,5 +42,11 @@ urlpatterns = [
     path('expenses/', views.expenses, name='expenses'),
     path('tasks/', views.tasks, name='tasks'),
     path('taxes/', views.taxes, name='taxes'),
+    # path('invoices/', views.invoice, name='invoices'),
+    path('invoices/add/invoice', views.add_invoice, name='add-invoice'),
+    # path('receipts/', views.receipt, name='receipts'),
+    path('receipts/add/receipt', views.add_receipt, name='add-receipt'),
+    # path('payments/', views.payment, name='payments'),
+    path('payments/add/payment', views.add_payment, name='add-payment'),
     
 ]

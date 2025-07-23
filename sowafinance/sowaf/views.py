@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
-from . models import Newcustomer, Newsupplier,Newclient,Newemployee,Newasset
+from . models import Newcustomer, Newsupplier,Newclient,Newemployee,Newasset,Newinvoice,InvoiceItem
 
 # Create your views here.
 # index view
@@ -15,62 +15,62 @@ def assets(request):
     return render(request, 'Assets.html', {'assets':assets})
 # assets form 
 def add_assests(request):
-    asset_name = request.POST.get('asset_name')
-    asset_tag = request.POST.get('asset_tag')
-    asset_category = request.POST.get('asset_category')
-    asset_description = request.POST.get('asset_description')
-    department = request.POST.get('department')
-    custodian = request.POST.get('custodian')
-    asset_status = request.POST.get('asset_status')
-    purchase_price = request.POST.get('purchase_price')
+    if request.method=='POST':
+        asset_name = request.POST.get('asset_name')
+        asset_tag = request.POST.get('asset_tag')
+        asset_category = request.POST.get('asset_category')
+        asset_description = request.POST.get('asset_description')
+        department = request.POST.get('department')
+        custodian = request.POST.get('custodian')
+        asset_status = request.POST.get('asset_status')
+        purchase_price = request.POST.get('purchase_price')
     # purchase_date = request.POST.get('purchase_date')
-    supplier = request.POST.get('supplier')
-    funding_source = request.POST.get('funding_source')
-    life_span = request.POST.get('life_span')
-    depreciation_method = request.POST.get('depreciation_method')
-    residual_value = request.POST.get('residual_value')
-    accumulated_depreciation = request.POST.get('accumulated_depreciation')
-    remaining_value = request.POST.get('remaining_value')
-    asset_account = request.POST.get('asset_account')
-    capitalization_date = request.POST.get('capitalization_date')
-    cost_center = request.POST.get('cost_center')
-    asset_condition = request.POST.get('asset_condition')
-    maintenance_schedule = request.POST.get('maintenance_schedule')
-    insurance_details = request.POST.get('insurance_details')
-    notes = request.POST.get('notes')
-    asset_attachments =request.FILES.get('asset_attachments')
+        supplier = request.POST.get('supplier')
+        funding_source = request.POST.get('funding_source')
+        life_span = request.POST.get('life_span')
+        depreciation_method = request.POST.get('depreciation_method')
+        residual_value = request.POST.get('residual_value')
+        accumulated_depreciation = request.POST.get('accumulated_depreciation')
+        remaining_value = request.POST.get('remaining_value')
+        asset_account = request.POST.get('asset_account')
+        capitalization_date = request.POST.get('capitalization_date')
+        cost_center = request.POST.get('cost_center')
+        asset_condition = request.POST.get('asset_condition')
+        maintenance_schedule = request.POST.get('maintenance_schedule')
+        insurance_details = request.POST.get('insurance_details')
+        notes = request.POST.get('notes')
+        asset_attachments =request.FILES.get('asset_attachments')
 # handling the date 
-    capitalization_date_str = request.POST.get('capitalization_date')
+        capitalization_date_str = request.POST.get('capitalization_date')
+        capitalization_date = None
+        if capitalization_date_str:
+            try:
 
-    capitalization_date = None
-
-    if capitalization_date_str:
-        try:
-            capitalization_date = datetime.strptime(capitalization_date_str, '%d/%m/%Y')
-        except ValueError:
-            capitalization_date = None  # Or handle error
+               capitalization_date = datetime.strptime(capitalization_date_str, '%d/%m/%Y')
+            except ValueError:
+                capitalization_date = None  # Or handle error
 # purchase date
-    purchase_date_str = request.POST.get('purchase_date')
-    purchase_date = None
-    if purchase_date_str:
-        try:
-            purchase_date = datetime.strptime(purchase_date_str, '%d/%m/%Y')
-        except ValueError:
-            purchase_date = None 
+        purchase_date_str = request.POST.get('purchase_date')
+        purchase_date = None
+        if purchase_date_str:
+            try:
+                purchase_date = datetime.strptime(purchase_date_str, '%d/%m/%Y')
+            except ValueError:
+                purchase_date = None 
 
     # waranty date
-    warranty_str = request.POST.get('warranty')
-    warranty = None
-    if warranty_str:
-        try:
-            warranty = datetime.strptime(warranty_str, '%d/%m/%Y')
-        except ValueError:
-            warranty = None 
+        warranty_str = request.POST.get('warranty')
+        warranty = None
+        if warranty_str:
+            try:
+                warranty = datetime.strptime(warranty_str, '%d/%m/%Y')
+            except ValueError:
+                warranty = None 
 
     # saving the assets
-    asset = Newasset(asset_name=asset_name,asset_tag=asset_tag,asset_category=asset_category,asset_description=asset_description,department=department,custodian=custodian,asset_status=asset_status,purchase_price=purchase_price,purchase_date=purchase_date,supplier=supplier,warranty=warranty,funding_source=funding_source,life_span=life_span,depreciation_method=depreciation_method,residual_value=residual_value,accumulated_depreciation=accumulated_depreciation,remaining_value=remaining_value,asset_account=asset_account,capitalization_date=capitalization_date,cost_center=cost_center,asset_condition=asset_condition,maintenance_schedule=maintenance_schedule,insurance_details=insurance_details,notes=notes,asset_attachments=asset_attachments,)
+        asset = Newasset(asset_name=asset_name,asset_tag=asset_tag,asset_category=asset_category,asset_description=asset_description,department=department,custodian=custodian,asset_status=asset_status,purchase_price=purchase_price,purchase_date=purchase_date,supplier=supplier,warranty=warranty,funding_source=funding_source,life_span=life_span,depreciation_method=depreciation_method,residual_value=residual_value,accumulated_depreciation=accumulated_depreciation,remaining_value=remaining_value,asset_account=asset_account,capitalization_date=capitalization_date,cost_center=cost_center,asset_condition=asset_condition,maintenance_schedule=maintenance_schedule,insurance_details=insurance_details,notes=notes,asset_attachments=asset_attachments,)
 
-    asset.save()
+        asset.save()
 
     return render(request, 'assets_form.html', {})
 # editing assets
@@ -403,13 +403,82 @@ def reports(request):
     return render(request, 'Reports.html', {})
 # sales view
 def sales(request):
+    invoices = Newinvoice.objects.all().prefetch_related('invoiceitem_set')  # Optimized for related items
+    return render(request, 'Sales.html', {'invoices': invoices})
 
-    return render(request, 'Sales.html', {})
 # invoice form view
 
 def add_invoice(request):
-    
-    return render(request, 'invoice_form.html', {})
+    customers = Newcustomer.objects.all()
+
+    if request.method == 'POST':
+        try:
+            # Parse and validate dates
+            invoice_date = datetime.strptime(request.POST.get('invoice_date', ''), '%d/%m/%Y') if request.POST.get('invoice_date') else None
+            invoice_due = datetime.strptime(request.POST.get('invoice_due', ''), '%d/%m/%Y') if request.POST.get('invoice_due') else None
+
+            # Get customer by ID (recommended approach)
+            customer_id = request.POST.get('customer')
+            customer = Newcustomer.objects.get(id=customer_id)
+
+            # Create invoice object first
+            invoice = Newinvoice.objects.create(
+                invoice_date=invoice_date,
+                invoice_due=invoice_due,
+                customer=customer,
+                email=request.POST.get('email'),
+                billing_address=request.POST.get('billing_address'),
+                shipping_address=request.POST.get('shipping_address'),
+                terms=request.POST.get('terms'),
+                sales_rep=request.POST.get('sales_rep'),
+                location=request.POST.get('location'),
+                tags=request.POST.get('tags'),
+                po_number=request.POST.get('po_number') or None,
+                item_details=request.POST.get('item_details'),
+                memo=request.POST.get('memo'),
+                customs_notes=request.POST.get('customs_notes'),
+                attachments=request.FILES.get('attachments'),
+                sub_total=request.POST.get('sub_total') or None,
+                discount=request.POST.get('discount') or None,
+                shipping=request.POST.get('shipping'),
+                total_due=request.POST.get('total_due') or None,
+            )
+            invoice.save()
+
+            # Saving the item rows — must be outside the .create() block
+            products = request.POST.getlist('product[]')
+            descriptions = request.POST.getlist('description[]')
+            qtys = request.POST.getlist('qty[]')
+            rates = request.POST.getlist('rate[]')
+            amounts = request.POST.getlist('amount[]')
+            billables = request.POST.getlist('billable[]')
+            taxes = request.POST.getlist('tax[]')
+
+            for i in range(len(products)):
+
+                item =InvoiceItem.objects.create(
+                    invoice=invoice,
+                    product=products[i],
+                    description=descriptions[i],
+                    qty=int(qtys[i]) if qtys[i] else 0,
+                    rate=float(rates[i]) if rates[i] else 0,
+                    amount=float(amounts[i]) if amounts[i] else 0,
+                    billable=(str(i) in billables),  # Adjust logic as needed
+                    tax=(str(i) in taxes)  # Adjust logic as needed
+                )
+                item.save()
+
+            return redirect('sales')
+
+        except Newcustomer.DoesNotExist:
+            error = "The selected customer does not exist."
+            return render(request, 'invoice_form.html', {'customers': customers, 'error': error})
+
+        except Exception as e:
+            return render(request, 'invoice_form.html', {'customers': customers, 'error': str(e)})
+
+    return render(request, 'invoice_form.html', {'customers': customers})
+
 # receipt form view
 
 def add_receipt(request):
