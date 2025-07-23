@@ -44,7 +44,21 @@ def register_user(request):
             return redirect('register')
         # else what
         else:
-            Newuser.objects.create_user(username=username,email=email,contact=contact,password=password)
+            Newuser.objects.create(username=username,email=email,contact=contact,password=make_password(password))
             messages.success(request, "User created successfully")
             return redirect('login')
-    return render(request, 'authenticate/register.html')
+    return render(request, 'registration/register.html')
+# login view
+def login_user(request):
+    if request.method=='POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        # authentication
+        user=authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('sowaf:home')
+        else:
+            messages.error(request, "Invalid credentials given")
+    return render(request, 'registration/login.html')

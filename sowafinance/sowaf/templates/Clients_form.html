@@ -72,7 +72,7 @@
   {% include 'includes/sidebar.html' %}
   <div class="form-container">
     <h2>Add New Client</h2>
- <form method='post' action="{% if client %}{% url 'edit-client' client.id %}{% else %}{% url 'add-client' %}{% endif %}" enctype= 'multipart/form-data'>
+ <form method='post' action="{% if client %}{% url 'sowaf:edit-client' client.id %}{% else %}{% url 'sowaf:add-client' %}{% endif %}" enctype= 'multipart/form-data'>
 
       <!-- Company Info -->
         {% csrf_token %}
@@ -158,7 +158,7 @@
 
       <!-- Footer -->
       <div class="footer">
-        <a href="{% url 'clients' %}" class="btn btn-green" style="text-decoration:none;">Cancel</a>
+        <a href="{% url 'sowaf:clients' %}" class="btn btn-green" style="text-decoration:none;">Cancel</a>
         <div></div>
         <div class="dropdown">
           <button type="button" class="btn btn-green">Save ▼</button>

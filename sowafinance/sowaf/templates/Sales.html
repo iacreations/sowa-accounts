@@ -12,13 +12,13 @@
           <span class="button_icon"><i class='bx bx-chevron-down'></i></span>
         </button>
         <div class="dropdown-content">
-          <a href="{% url 'add-invoice' %}">Invoice</a>
-          <a href="{% url 'add-receipt' %}">Receipt</a>
-          <a href="{% url 'add-payments' %}">Receive payment</a>
+          <a href="{% url 'sowaf:add-invoice' %}">Invoice</a>
+          <a href="{% url 'sowaf:add-receipt' %}">Receipt</a>
+          <a href="{% url 'sowaf:add-payments' %}">Receive payment</a>
         </div>
       </div>
 
-      <a href="{% url 'add-products' %}" style="text-decoration: none;">
+      <a href="{% url 'sowaf:add-products' %}" style="text-decoration: none;">
         <button class="button" style="width: fit-content;">
         <span class="button_text">New Products/Services</span>
         <span class="button_icon">

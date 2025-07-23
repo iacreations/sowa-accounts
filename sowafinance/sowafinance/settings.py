@@ -27,9 +27,12 @@ SECRET_KEY = 'django-insecure-84a7d0o69un#_p=n_ew2f8*tn(@y9=4-wu57mw)edc7u)t*&-f
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '172.20.10.14','localhost',
-    '127.0.0.1','localhost'
+    'localhost',
+    '127.0.0.1',
+    '172.20.10.14',
+    '.app.github.dev',  # wildcard to support any Codespace URL
 ]
+
 
 
 # Application definition
@@ -54,6 +57,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.app.github.dev',  # Accept CSRF tokens from any valid Codespace URL
+]
+
+
 
 ROOT_URLCONF = 'sowafinance.urls'
 
@@ -132,3 +142,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SECURE_CSRF_COOKIE = True
+LOGIN_URL = 'login'
+

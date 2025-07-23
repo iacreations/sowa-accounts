@@ -110,7 +110,7 @@
   {% include 'includes/sidebar.html' %}
   <div class="container">
     <h2>Supplier Details</h2>
-<form method='post' action="{% if supplier %}{% url 'edit-supplier' supplier.id %}{% else %}{% url 'add-suppliers' %}{% endif %}" enctype= 'multipart/form-data'>
+<form method='post' action="{% if supplier %}{% url 'sowaf:edit-supplier' supplier.id %}{% else %}{% url 'sowaf:add-suppliers' %}{% endif %}" enctype= 'multipart/form-data'>
   <div class="section">
         <div class="collapsible-header">Customer Logo</div>
         <div class="collapsible-content form-row">
@@ -205,7 +205,7 @@
 
     <!-- Footer -->
     <div class="footer">
-      <a href="{% url 'suppliers' %}" class="btn btn-green" style="text-decoration:none;">Cancel</a>
+      <a href="{% url 'sowaf:suppliers' %}" class="btn btn-green" style="text-decoration:none;">Cancel</a>
       <div>
         
       </div>

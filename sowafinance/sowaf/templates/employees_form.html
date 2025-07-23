@@ -189,7 +189,7 @@
   {% include 'includes/sidebar.html' %}
 <div class="container">
   <h2>Employee Entry Form</h2>
- <form method='post' action="{% if employee %}{% url 'edit-employee' employee.id %}{% else %}{% url 'add-employee' %}{% endif %}" enctype= 'multipart/form-data'>
+ <form method='post' action="{% if employee %}{% url 'sowaf:edit-employee' employee.id %}{% else %}{% url 'sowaf:add-employee' %}{% endif %}" enctype= 'multipart/form-data'>
   <!-- Employee Details + Profile Picture -->
   {% csrf_token %}
   <div class="header">
@@ -309,7 +309,7 @@
 
   <!-- Footer -->
   <div class="footer">
-    <a href="{% url 'employees' %}"><button class="btn btn-light">Cancel</button></a>
+    <a href="{% url 'sowaf:employees' %}"><button class="btn btn-light">Cancel</button></a>
     <div class="left"></div>
     <div class="center">
       <button class="btn btn-preview">Print / Preview</button>

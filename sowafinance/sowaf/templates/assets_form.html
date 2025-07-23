@@ -34,7 +34,7 @@
   
   <div class="container">
     <h2 class="title">Fixed Asset Register</h2>
-    <form method='post' action="{% if asset %}{% url 'edit-asset' asset.id %}{% else %}{% url 'add-asset' %}{% endif %}" enctype= 'multipart/form-data'>
+    <form method='post' action="{% if asset %}{% url 'sowaf:edit-asset' asset.id %}{% else %}{% url 'sowaf:add-asset' %}{% endif %}" enctype= 'multipart/form-data'>
       {% csrf_token %}
       <div class="section-wrapper">
         <div class="section-title">General Information</div>
@@ -109,7 +109,7 @@
       </div>
 
       <div class="footer">
-        <a href="{% url 'assets' %}"><button type="button" class="btn btn-cancel">Cancel</button></a>
+        <a href="{% url 'sowaf:assets' %}"><button type="button" class="btn btn-cancel">Cancel</button></a>
         <button class="btn btn-light-green" onclick="window.print(); return false;">Print / Preview</button>
         <div class="dropdown">
           <button type="button" class="btn btn-green">Save ▼</button>

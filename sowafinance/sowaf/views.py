@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 from . models import Newcustomer, Newsupplier,Newclient,Newemployee,Newasset,Newinvoice,InvoiceItem
 
 # Create your views here.
 # index view
+@login_required
 def home(request):
 
     return render(request, 'Home.html', {})
@@ -136,7 +138,7 @@ def edit_asset(request, pk):
             asset.asset_attachments = request.FILES['asset_attachments']
         asset.save()
 
-        return redirect('assets')
+        return redirect('sowaf:assets')
     return render(request, 'assets_form.html', {'asset': asset})
 # customer view
 
@@ -175,7 +177,7 @@ def add_customer(request):
         if save_action == 'save&new':
             return redirect('add-customer')
         elif save_action == 'save&close':
-            return redirect('customers')
+            return redirect('sowaf:customers')
        
     return render(request, 'customers_form.html', {})
 # editing the customer table
@@ -210,7 +212,7 @@ def edit_customer(request, pk):
 
         customer.save()
 
-        return redirect('customers')
+        return redirect('sowaf:customers')
 
     return render(request, 'customers_form.html', {'customer': customer})
 
@@ -218,7 +220,7 @@ def edit_customer(request, pk):
 def delete_customer(request, pk):
     customer = get_object_or_404(Newcustomer, pk=pk)
     customer.delete()
-    return redirect('customers')
+    return redirect('sowaf:customers')
 
 # clients view
 
@@ -257,7 +259,7 @@ def add_client(request):
         if save_action == 'save&new':
             return redirect('add-client')
         elif save_action == 'save&close':
-            return redirect('clients')
+            return redirect('sowaf:clients')
 
     return render(request, 'Clients_form.html', {})
 # editing the client
@@ -289,14 +291,14 @@ def edit_client(request, pk):
             client.logo = request.FILES['logo']
 
         client.save()
-        return redirect('clients')  # Or wherever your list view is
+        return redirect('sowaf:clients')  # Or wherever your list view is
 
     return render(request, 'clients_form.html', {'client': client})
 # client delete view
 def delete_client(request, pk):
     client = get_object_or_404(Newclient, pk=pk)
     client.delete()
-    return redirect('clients')
+    return redirect('sowaf:clients')
 
 # employee view
 def employee(request):
@@ -347,7 +349,7 @@ def add_employees(request):
         if save_action == 'save&new':
             return redirect('add-employee')
         elif save_action == 'save&close':
-            return redirect('employees')
+            return redirect('sowaf:employees')
     
     return render(request, 'employees_form.html', {})
 
@@ -396,7 +398,7 @@ def edit_employee(request, pk):
            employee.doc_attachments = request.FILES['doc_attachments']
 
         employee.save()
-        return redirect('employees')  # Or wherever your list view is
+        return redirect('sowaf:employees')  # Or wherever your list view is
 
     return render(request, 'employees_form.html', {'employee': employee})
 
@@ -404,7 +406,7 @@ def edit_employee(request, pk):
 def delete_employee(request, pk):
     employee  = get_object_or_404(Newemployee, pk=pk)
     employee.delete()
-    return redirect('employees')
+    return redirect('sowaf:employees')
 
 # expenses view
 def expenses(request):
@@ -491,7 +493,7 @@ def add_invoice(request):
                     return redirect('add-invoice')
                 elif save_action == 'save&close':
                     return redirect('sales')
-            return redirect('sales')
+            return redirect('sowaf:sales')
 
         except Newcustomer.DoesNotExist:
             error = "The selected customer does not exist."
@@ -560,7 +562,7 @@ def add_suppliers(request):
         if save_action == 'save&new':
             return redirect('add-suppliers')
         elif save_action == 'save&close':
-            return redirect('suppliers')
+            return redirect('sowaf:suppliers')
     return render(request, 'suppliers_entry_form.html', {})
 # editing supplier information
 def edit_supplier(request, pk):
@@ -596,7 +598,7 @@ def edit_supplier(request, pk):
             supplier.attachments = request.FILES.get('attachments')
 
         supplier.save()
-        return redirect('suppliers')
+        return redirect('sowaf:suppliers')
 
     return render(request, 'suppliers_entry_form.html', {'supplier': supplier})
 
@@ -604,7 +606,7 @@ def edit_supplier(request, pk):
 def delete_supplier(request, pk):
     supplier = get_object_or_404(Newsupplier, pk=pk)
     supplier.delete()
-    return redirect('suppliers')    
+    return redirect('sowaf:suppliers')    
 # tasks view
 def tasks(request):
 

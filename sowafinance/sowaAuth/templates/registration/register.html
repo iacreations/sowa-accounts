@@ -1,5 +1,5 @@
 {% load static %}
-{% include "authenticate/includes/header.html" %}
+{% include "includes/header.html" %}
   <div class="container">
     <div class="logo">
       <img src="{% static 'sowaf/images/yo-logo.png' %}" alt="YoAccountant">
@@ -42,7 +42,9 @@
       </div>
       <button type="submit" class="btn">SIGN UP</button>
     </form>
-
+<div class="checkbox col-2" style="margin-left:5%;">
+         <h4 style="margin-left:12%;"> Already have an account? <a href="{% url 'login' %}" style="color:green; text-align:center; font-size:14px; text-decoration:none;">   Login here!</a></h4>
+      </div>
     <div class="divider">Or Sign in/up with</div>
 
     <div class="social-buttons">

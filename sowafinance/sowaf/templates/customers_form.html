@@ -150,7 +150,7 @@
   {% include 'includes/sidebar.html' %}
   <div class="form-container">
     <h2>Customer Form</h2>
-    <form method='post' action="{% if customer %}{% url 'edit-customer' customer.id %}{% else %}{% url 'add-customer' %}{% endif %}" enctype= 'multipart/form-data'>
+    <form method='post' action="{% if customer %}{% url 'sowaf:edit-customer' customer.id %}{% else %}{% url 'sowaf:add-customer' %}{% endif %}" enctype= 'multipart/form-data'>
 <!-- Logo Upload -->
 {% csrf_token %}
       <div class="section">
@@ -257,7 +257,7 @@
 
       <!-- Footer -->
       <div class="footer">
-        <a href="{% url 'customers' %}">
+        <a href="{% url 'sowaf:customers' %}">
           <button type="button" class="btn btn-cancel">Cancel</button>
         </a>
         
