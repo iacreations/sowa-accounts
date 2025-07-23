@@ -5,7 +5,7 @@ from . import views
 app_name='sowaf'
 # my urls
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('home/', views.home, name='home'),
     # asset urls
     path('assets/', views.assets, name='assets'),
     path('assets/add/asset', views.add_assests, name='add-asset'),
