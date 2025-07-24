@@ -25,13 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-84a7d0o69un#_p=n_ew2f8*tn(@y9=4-wu57mw)edc7u)t*&-f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '172.20.10.14',
-    '.app.github.dev',  # wildcard to support any Codespace URL
+    '.app.github.dev',
+    '.onrender.com',
 ]
 
 
@@ -57,8 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.app.github.dev',  # Accept CSRF tokens from any valid Codespace URL
