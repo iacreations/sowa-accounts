@@ -15,7 +15,7 @@
       {% endfor %}
     {% endif %}
     <!-- Sign Up Form -->
-    <form id="signup-form" action="{% url 'sowaAuth:register' %}" method="POST">
+    <form id="signup-form" action="{% url 'register' %}" method="POST">
       {% csrf_token %}
       <div class="input-group">
         <i class='bx bx-user'></i>
@@ -43,7 +43,7 @@
       <button type="submit" class="btn">SIGN UP</button>
     </form>
 <div class="checkbox col-2" style="margin-left:5%;">
-         <h4 style="margin-left:12%;"> Already have an account? <a href="{% url 'sowaAuth:login' %}" style="color:green; text-align:center; font-size:14px; text-decoration:none;">   Login here!</a></h4>
+         <h4 style="margin-left:12%;"> Already have an account? <a href="{% url 'login' %}" style="color:green; text-align:center; font-size:14px; text-decoration:none;">   Login here!</a></h4>
       </div>
     <div class="divider">Or Sign in/up with</div>
 

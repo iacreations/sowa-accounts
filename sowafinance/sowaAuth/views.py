@@ -68,7 +68,7 @@ def login_user(request):
 # logout view
 def logout_user(request):
     logout(request)
-    return redirect('sowaAuth:login')
+    return redirect('login')
 # getting the otp
 def verify_otp(request):
     return render(request, 'registration/otp.html')

@@ -150,7 +150,7 @@ CSRF_COOKIE_SECURE = True  # Codespaces uses HTTPS
 CSRF_COOKIE_SAMESITE = 'None'  # Chrome blocks cookies unless SameSite=None for cross-origin
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True 
-LOGIN_URL = 'sowaAuth:login'
+LOGIN_URL = 'login'
 AUTH_USER_MODEL = 'sowaAuth.Newuser'
 
 LOGIN_REDIRECT_URL = reverse_lazy('sowaf:home')
