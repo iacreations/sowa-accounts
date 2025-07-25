@@ -256,6 +256,9 @@
     
         <!-- Attachments -->
         <div class="attachments">
+          {% if customer.attachments %}
+           <p>Existing file: <a href="" target="_blank">Download</a></p>
+          {% endif %}
           <input type="file" multiple />
           <i class='bx bx-upload' style="font-size: 30px;"></i>
           <p>Drag/Drop files here or click to upload (Max size: 20MB)</p>

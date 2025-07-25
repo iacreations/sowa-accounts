@@ -299,6 +299,9 @@
       </div>
       <div class="spacer"></div>
       <div class="attachments" style="width: fit-content; padding: 15px 20px;">
+        {% if customer.attachments %}
+        <p>Existing file: <a href="{{ customer.attachments.url }}" target="_blank">Download</a></p>
+        {% endif %}
         <input type="file" multiple />
         <i class='bx bx-upload' style="font-size: 20px;"></i>
         <p style="font-size: 13px;">Click to upload</p>

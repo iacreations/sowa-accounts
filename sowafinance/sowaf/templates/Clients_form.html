@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Add New Client</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
@@ -72,21 +74,39 @@
   {% include 'includes/sidebar.html' %}
   <div class="form-container">
     <h2>Add New Client</h2>
+     
  <form method='post' action="{% if client %}{% url 'sowaf:edit-client' client.id %}{% else %}{% url 'sowaf:add-client' %}{% endif %}" enctype= 'multipart/form-data'>
 
       <!-- Company Info -->
         {% csrf_token %}
+        
+        {% if messages %}
+      {% for message in messages %}
+        {% if messages.tags == 'error' %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% else %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
       <div class="section">
         <div class="collapsible-header">Company Information</div>
         <div class="collapsible-content form-row">
-          <div class="field"><label>Company Logo</label><input type="file" name="logo" accept="image/*" style="font-size: 1em; width: 100%;" value="{{ client.logo|default_if_none:'' }}"></div>
+          <div class="field">
+            <label>Company Logo</label>
+             {% if customer.logo %}
+             <p>Existing logo</p>
+               <img src="{{ client.logo.url }}" alt="Attachment" width="100" />
+              {% endif %}
+            <input type="file" name="logo" accept="image/*" style="font-size: 1em; width: 100%;">
+          </div>
           <div class="field"><label>Company Name <span style="color:red;">*</span></label><input type="text"  name="company" value="{{ client.company|default_if_none:'' }}" required></div>
           <div class="field"><label>Phone <span style="color:red;">*</span></label><input type="tel" name="phone" value="{{ client.phone|default_if_none:'' }}" required></div>
           <div class="field"><label>Email <span style="color:red;">*</span></label><input type="email" name="company_email" value="{{ client.company_email|default_if_none:'' }}" required></div>
           <div class="field"><label>Address <span style="color:red;">*</span></label><input type="text" name="address" value="{{ client.address|default_if_none:'' }}" required></div>
           <div class="field"><label>Country <span style="color:red;">*</span></label><input type="text" name="country" value="{{ client.country|default_if_none:'' }}" required></div>
           <div class="field"><label>Business Registration No.</label><input type="text" name="reg_number" value="{{ client.reg_number|default_if_none:'' }}" ></div>
-          <div class="field"><label>Start Date of Business Operation</label><input type="date" style="font-size: 1em; width: 100%;" name="start_date" value="{{ client.start_date|default_if_none:'' }}" ></div>
+          <div class="field"><label>Start Date of Business Operation</label><input type="text" style="font-size: 1em; width: 100%;" name="start_date" value="{{ client.start_date|date:'d/m/Y'|default_if_none:'' }}" placeholder="dd/mm/yyyy"></div>
         </div>
       </div>
 
@@ -151,7 +171,7 @@
           </div>
           <div class="field" style="flex: 1 1 100%;">
             <label>Notes</label>
-            <textarea rows="3" name="notes" value="{{ client.notes|default_if_none:'' }}"></textarea>
+            <textarea rows="3" name="notes">value="{{ client.notes|default_if_none:'' }}"</textarea>
           </div>
         </div>
       </div>

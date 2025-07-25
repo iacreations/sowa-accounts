@@ -104,7 +104,17 @@
           <div class="form-group"><label>Maintenance Schedule</label><input name="maintenance_schedule" value="{{ asset.maintenance_schedule|default_if_none:'' }}" type="text"></div>
           <div class="form-group"><label>Insurance Details</label><input name="insurance_details" value="{{ asset.insurance_details|default_if_none:'' }}" type="text"></div>
           <div class="form-group"><label>Notes / Remarks</label><textarea rows="3" name="notes" value="{{ asset.notes|default_if_none:'' }}"></textarea></div>
-          <div class="form-group"><label>Attachments</label><div class="attachments"><input name="asset_attachments" value="{{ asset.asset_attachments|default_if_none:'' }}" type="file" multiple /><i class='bx bx-upload' style="font-size: 30px;"></i><p>Drag/Drop files or click to upload</p></div></div>
+          <div class="form-group">
+            <label>Attachments</label>
+            <div class="attachments">
+              {% if customer.attachments %}
+               <p>Existing file: <a href="{{ asset.asset_attachments.url }}" target="_blank">Download</a></p>
+               {% endif %}
+              <input name="asset_attachments" value="{{ asset.asset_attachments|default_if_none:'' }}" type="file" multiple />
+              <i class='bx bx-upload' style="font-size: 30px;"></i>
+              <p>Drag/Drop files or click to upload</p>
+            </div>
+          </div>
         </div>
       </div>
 

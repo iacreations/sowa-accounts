@@ -116,7 +116,11 @@
         <div class="collapsible-content form-row">
           <div class="field">
             <label >Upload Logo</label>
-            <input type="file" accept="image/png" value="{{ supplier.logo|default_if_none:'' }}" name='logo' />
+            {% if customer.logo %}
+             <p>Existing logo</p>
+               <img src="{{ supplier.logo.url }}" alt="logo" width="100" />
+              {% endif %}
+            <input type="file" accept="image/png" name='logo' />
             <small style="color: #777;">PNG file only</small>
           </div>
         </div>
@@ -198,7 +202,10 @@
 
     <!-- Attachments -->
     <div class="attachments">
-      <input type="file" multiple name="attachments" value="{{ supplier.attachments|default_if_none:'' }}">
+      {% if customer.attachments %}
+       <p>Existing file: <a href="{{ supplier.attachments.url }}" target="_blank">Download</a></p>
+      {% endif %}
+      <input type="file" multiple name="attachments">
       <i class='bx bx-upload' style="font-size: 24px;"></i>
       <p>Click or drag files here to upload documents (e.g. agreements)</p>
     </div>

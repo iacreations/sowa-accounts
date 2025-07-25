@@ -192,19 +192,32 @@
  <form method='post' action="{% if employee %}{% url 'sowaf:edit-employee' employee.id %}{% else %}{% url 'sowaf:add-employee' %}{% endif %}" enctype= 'multipart/form-data'>
   <!-- Employee Details + Profile Picture -->
   {% csrf_token %}
+        {% if messages %}
+      {% for message in messages %}
+        {% if messages.tags == 'error' %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% else %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
   <div class="header">
     
     <div class="field"><label>First Name *</label><input name="first_name" value="{{ employee.first_name|default_if_none:'' }}" type="text" required></div>
     <div class="field"><label>Last Name *</label><input name="last_name" value="{{ employee.last_name|default_if_none:'' }}" type="text" required></div>
     <div class="field"><label>Gender</label><select name="gender" value="{{ employee.gender|default_if_none:'' }}"><option>Male</option><option>Female</option><option>Other</option></select></div>
-    <div class="field"><label>Date of Birth</label><input name="dob" value="{{ employee.dob|default_if_none:'' }}" type="date"></div>
+    <div class="field"><label>Date of Birth</label><input name="dob" value="{{ employee.dob|date:'d/m/Y'|default_if_none:'' }}" type="text" placeholder="dd/mm/yyyy"></div>
     <div class="field"><label>Nationality</label><input name="nationality" value="{{ employee.nationality|default_if_none:'' }}" type="text"></div>
     <div class="field"><label>National ID / SSN / NIN *</label><input name="nin_number" value="{{ employee.nin_number|default_if_none:'' }}" type="text" required></div>
     <div class="field"><label>Tax ID / TIN *</label><input name="tin_number" value="{{ employee.tin_number|default_if_none:'' }}" type="text" required></div>
     <div class="field">
       <label>Profile Picture</label>
+       {% if customer.logo %}
+             <p>Existing picture</p>
+               <img src="{{ employee.profile_picture.url }}" alt="Attachment" width="100" />
+              {% endif %}
       <div class="profile-upload">
-        <input name="profile_picture" value="{{ employee.profile_picture|default_if_none:'' }}" type="file" accept="image/*" />
+        <input name="profile_picture" type="file" accept="image/*" />
         <i class='bx bx-upload'></i>
         <p>Upload</p>
       </div>
@@ -250,7 +263,7 @@
             <option value="{{ employee.status|default_if_none:'' }}">Terminated</option>
           </select>
         </div>
-        <div class="field"><label>Date of Hire *</label><input name="hire_date" value="{{ employee.hire_date|default_if_none:'' }}" type="date" required></div>
+        <div class="field"><label>Date of Hire *</label><input name="hire_date" value="{{ employee.hire_date|date:'d/m/Y'|default_if_none:'' }}" type="text" placeholder="dd/mm/yyyy" required></div>
         <div class="field"><label>Supervisor</label><input name="supervisor" value="{{ employee.supervisor|default_if_none:'' }}" type="text"></div>
       </div>
     </div>
@@ -289,7 +302,7 @@
       <div class="header">
         <div class="field">
           <label>Notes</label>
-          <textarea rows="3" name="additional_notes" value="{{ employee.additional_notes|default_if_none:'' }}"></textarea>
+          <textarea rows="3" name="additional_notes"> value="{{ employee.additional_notes|default_if_none:'' }}" </textarea>
         </div>
         <div class="field">
           <label>Custom Fields</label>
@@ -302,7 +315,10 @@
 
   <!-- File Upload Section for Documents -->
   <div class="attachments-doc">
-    <input name="doc_attachments" value="{{ employee.doc_attachments|default_if_none:'' }}" type="file" multiple>
+      {% if employee.doc_attachments %}
+  <p>Existing file: <a href="{{ employee.doc_attachments.url }}" target="_blank">Download</a></p>
+{% endif %} 
+    <input name="doc_attachments"type="file" multiple>
     <i class='bx bx-upload' style="font-size: 24px;"></i>
     <p>Click or drag files here to upload documents (CV, ID, Contracts)</p>
   </div>

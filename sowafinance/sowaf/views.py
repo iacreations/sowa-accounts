@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from . models import Newcustomer, Newsupplier,Newclient,Newemployee,Newasset,Newinvoice,InvoiceItem
 
@@ -152,6 +153,14 @@ def customers(request):
 def add_customer(request):
     if request.method == 'POST':
         logo =request.FILES.get('logo')
+        if logo:
+            if not logo.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the logo.")
+                return redirect(request.path)
+            # restricting the photo size
+        if logo.size > 800 * 1024:
+            messages.error(request, "Logo file size must be 800KB or less.")
+            return redirect(request.path)
         customer_name =request.POST.get('name')
         company_name =request.POST.get('company')
         email =request.POST.get('email')
@@ -160,7 +169,14 @@ def add_customer(request):
         website =request.POST.get('website')
         tin_number =request.POST.get('tin')
         opening_balance =request.POST.get('balance')
-        registration_date =request.POST.get('today')
+        registration_date_str = request.POST.get('today')
+        registration_date = None
+        if registration_date_str:
+            try:
+               registration_date = datetime.strptime(registration_date_str, '%d/%m/%Y')
+            except ValueError:
+               registration_date = None 
+               
         street_one =request.POST.get('street1')
         street_two =request.POST.get('street2')
         city =request.POST.get('city')
@@ -194,7 +210,12 @@ def edit_customer(request, pk):
         customer.website = request.POST.get('website',customer.website)
         customer.tin_number = request.POST.get('tin',customer.tin_number)
         customer.opening_balance = request.POST.get('balance',customer.opening_balance)
-        customer.registration_date = request.POST.get('today',customer.registration_date)
+        registration_date_str = request.POST.get('today')
+        if registration_date_str:
+            try:
+                customer.registration_date = datetime.strptime(registration_date_str, '%d/%m/%Y')
+            except ValueError:
+                pass  # Keep the original value or handle error
         customer.street_one = request.POST.get('street1',customer.street_one)
         customer.street_two = request.POST.get('street2',customer.street_two)
         customer.city = request.POST.get('city',customer.city)
@@ -204,8 +225,17 @@ def edit_customer(request, pk):
         customer.actions = request.POST.get('actions',customer.actions)
         customer.notes = request.POST.get('notes',customer.notes)
 
-        if 'logo' in request.FILES:
-         customer.logo = request.FILES['logo']
+        logo = request.FILES.get('logo')
+        if logo:
+            if not logo.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the logo.")
+                return redirect(request.path)
+            # restricting the photo size
+        if logo.size > 800 * 1024:
+            messages.error(request, "Logo file size must be 800KB or less.")
+            return redirect(request.path)
+        customer.logo = logo
+        
         if 'attachments' in request.FILES:
 
             customer.attachments = request.FILES['attachments']
@@ -233,13 +263,27 @@ def clients(request):
 def add_client(request):
     if request.method=='POST':
         logo =request.FILES.get('logo')
+        if logo:
+            if not logo.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the logo.")
+                return redirect(request.path)
+            # restricting the photo size
+        if logo.size > 800 * 1024:
+            messages.error(request, "Logo file size must be 800KB or less.")
+            return redirect(request.path)
         company = request.POST.get('company')
         phone = request.POST.get('phone')
         company_email = request.POST.get('company_email')
         address = request.POST.get('address')
         country = request.POST.get('country')
         reg_number = request.POST.get('reg_number')
-        start_date = request.POST.get('start_date')
+        start_date_str = request.POST.get('start_date')
+        start_date = None
+        if start_date_str:
+            try:
+               start_date = datetime.strptime(start_date_str, '%d/%m/%Y')
+            except ValueError:
+               start_date = None
         contact_name = request.POST.get('contact_name')
         position = request.POST.get('position')
         contact = request.POST.get('contact')
@@ -273,7 +317,12 @@ def edit_client(request, pk):
         client.address = request.POST.get('address', client.address)
         client.country = request.POST.get('country', client.country)
         client.reg_number = request.POST.get('reg_number', client.reg_number)
-        client.start_date = request.POST.get('start_date', client.start_date)
+        start_date_str = request.POST.get('start_date')
+        if start_date_str:
+            try:
+                client.start_date = datetime.strptime(start_date_str, '%d/%m/%Y')
+            except ValueError:
+                pass  # Keep the original value or handle error
         client.contact_name = request.POST.get('contact_name', client.contact_name)
         client.position = request.POST.get('position', client.position)
         client.contact = request.POST.get('contact', client.contact)
@@ -287,8 +336,16 @@ def edit_client(request, pk):
         client.notes = request.POST.get('notes', client.notes)
 
         # ✅ Only update logo if a new one is uploaded
-        if 'logo' in request.FILES:
-            client.logo = request.FILES['logo']
+        logo =request.FILES.get('logo')
+        if logo:
+            if not logo.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the logo.")
+                return redirect(request.path)
+            # restricting the photo size
+        if logo.size > 800 * 1024:
+            messages.error(request, "Logo file size must be 800KB or less.")
+            return redirect(request.path)
+        client.logo = logo
 
         client.save()
         return redirect('sowaf:clients')  # Or wherever your list view is
@@ -311,11 +368,25 @@ def add_employees(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         gender = request.POST.get('gender')
-        dob = request.POST.get('dob')
+        dob_str = request.POST.get('dob')
+        dob = None
+        if dob_str:
+            try:
+               dob = datetime.strptime(dob_str, '%d/%m/%Y')
+            except ValueError:
+               dob = None
         nationality = request.POST.get('nationality')
         nin_number = request.POST.get('nin_number')
         tin_number = request.POST.get('tin_number')
         profile_picture = request.FILES.get('profile_picture')
+        if profile_picture:
+            if not profile_picture.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the profile_picture.")
+                return redirect(request.path)
+            # restricting the photo size
+        if profile_picture.size > 800 * 1024:
+            messages.error(request, "profile_picture file size must be 800KB or less.")
+            return redirect(request.path)
         phone_number = request.POST.get('phone_number')
         email_address = request.POST.get('email_address')
         residential_address = request.POST.get('residential_address')
@@ -326,7 +397,13 @@ def add_employees(request):
         department = request.POST.get('department')
         employment_type = request.POST.get('employment_type')
         status = request.POST.get('status')
-        hire_date = request.POST.get('hire_date')
+        hire_date_str = request.POST.get('hire_date')
+        hire_date = None
+        if hire_date_str:
+            try:
+               hire_date = datetime.strptime(hire_date_str, '%d/%m/%Y')
+            except ValueError:
+               hire_date = None
         supervisor = request.POST.get('supervisor')
         salary = request.POST.get('salary')
         payment_frequency = request.POST.get('payment_frequency')
@@ -361,7 +438,12 @@ def edit_employee(request, pk):
         employee.first_name = request.POST.get('first_name', employee.first_name)
         employee.last_name = request.POST.get('last_name', employee.last_name)
         employee.gender = request.POST.get('gender', employee.gender)
-        employee.dob = request.POST.get('dob', employee.dob)
+        dob_str = request.POST.get('dob')
+        if dob_str:
+            try:
+                employee.dob = datetime.strptime(dob_str, '%d/%m/%Y')
+            except ValueError:
+                pass  # Keep the original value or handle error
         employee.nationality = request.POST.get('nationality', employee.nationality)
         employee.nin_number = request.POST.get('nin_number', employee.nin_number)
         employee.tin_number = request.POST.get('tin_number', employee.tin_number)
@@ -375,7 +457,12 @@ def edit_employee(request, pk):
         employee.department = request.POST.get('department', employee.department)
         employee.employment_type = request.POST.get('employment_type', employee.employment_type)
         employee.status = request.POST.get('status', employee.status)
-        employee.hire_date = request.POST.get('hire_date', employee.hire_date)
+        hire_date_str = request.POST.get('hire_date')
+        if hire_date_str:
+            try:
+                employee.hire_date = datetime.strptime(hire_date_str, '%d/%m/%Y')
+            except ValueError:
+                pass  # Keep the original value or handle error
         employee.department = request.POST.get('department', employee.department)
         employee.supervisor = request.POST.get('supervisor', employee.supervisor)
         employee.salary = request.POST.get('salary', employee.salary)
@@ -390,10 +477,18 @@ def edit_employee(request, pk):
         employee.intaxable_allowances = request.POST.get('intaxable_allowances', employee.intaxable_allowances)
         employee.additional_notes = request.POST.get('additional_notes', employee.additional_notes)
 
-        # ✅ Only update logo if a new one is uploaded
-        if 'profile_picture' in request.FILES:
-           employee.profile_picture = request.FILES['profile_picture']
-
+        # ✅ Only update profile_picture if a new one is uploaded
+        profile_picture =request.FILES.get('profile_picture')
+        if profile_picture:
+            if not profile_picture.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the profile_picture.")
+                return redirect(request.path)
+            # restricting the photo size
+        if profile_picture.size > 800 * 1024:
+            messages.error(request, "profile_picture file size must be 800KB or less.")
+            return redirect(request.path)
+        employee.profile_picture = profile_picture
+        
         if 'doc_attachments' in request.FILES:
            employee.doc_attachments = request.FILES['doc_attachments']
 
@@ -530,6 +625,15 @@ def supplier(request):
 def add_suppliers(request):
     if request.method == 'POST':
         logo =request.FILES.get('logo')
+        if logo:
+            if not logo.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the logo.")
+                return redirect(request.path)
+            # restricting the photo size
+        if logo.size > 800 * 1024:
+            messages.error(request, "Logo file size must be 800KB or less.")
+            return redirect(request.path)
+    
         company_name = request.POST.get('company_name')
         supplier_type = request.POST.get('supplier_type')
         status = request.POST.get('status')
@@ -592,8 +696,18 @@ def edit_supplier(request, pk):
         supplier.tin = request.POST.get('tin',supplier.tin)
         supplier.reg_number = request.POST.get('reg_number',supplier.reg_number)
         supplier.tax_rate = request.POST.get('tax_rate',supplier.tax_rate )
-        if request.FILES.get('logo'):
-            supplier.logo = request.FILES.get('logo')
+        
+        logo =request.FILES.get('logo')
+        if logo:
+            if not logo.name.lower().endswith('.png'):
+                messages.error(request, "Only PNG files are allowed for the logo.")
+                return redirect(request.path)
+            # restricting the photo size
+        if logo.size > 800 * 1024:
+            messages.error(request, "Logo file size must be 800KB or less.")
+            return redirect(request.path)
+        supplier.logo = logo
+        
         if request.FILES.get('attachments'):
             supplier.attachments = request.FILES.get('attachments')
 
