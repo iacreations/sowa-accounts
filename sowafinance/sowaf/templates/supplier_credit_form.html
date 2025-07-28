@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Supplier Credit Form</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+      <link rel="stylesheet" href="{% static 'sowaf/styles/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'sowaf/styles/bootsrap.min.css' %}" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif; font-size: 14px; }
     body { background: #f4f6f8; padding: 30px; }
@@ -106,19 +108,19 @@
     <div class="total">Total: Ush <span id="totalAmount">0.00</span></div>
 
     <div class="footer">
-      <a href="./Expenses.html"><button class="btn btn-cancel">Cancel</button></a>
+      <a href="{% url 'sowaf:supplier' %}"><button class="btn btn-cancel">Cancel</button></a>
       <button class="btn btn-light-green" onclick="window.print()">Print / Preview</button>
       <div class="dropdown">
-        <button class="btn btn-green">Save ▼</button>
-        <div class="dropdown-menu">
-          <button onclick="saveForm('save')">Save</button>
-          <button onclick="saveForm('saveNew')">Save & New</button>
-          <button onclick="saveForm('saveClose')">Save & Close</button>
+          <button type="button" class="btn btn-green">Save ▼</button>
+          <div class="dropdown-menu">
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save">Save</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&new">Save & New</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&close">Save & Close</button>
+          </div>
         </div>
-      </div>
     </div>
   </div>
-
+<script src=" {% static 'sowaf/styles/script.js' %} "></script>
   <script>
     document.querySelectorAll(".collapsible").forEach(btn => {
       btn.addEventListener("click", () => {

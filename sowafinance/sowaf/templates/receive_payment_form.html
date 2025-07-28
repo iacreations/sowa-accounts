@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Receive Payment</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
+      <link rel="stylesheet" href="{% static 'sowaf/styles/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'sowaf/styles/bootsrap.min.css' %}" />
   <style>
     body {
       background: #f4f6f8;
@@ -159,12 +163,20 @@
   </table>
 
   <div class="footer">
-    <a href="./Sales.html">
+    <a href="{% url 'sowaf:home' %}">
       <button class="btn btn-light">Cancel</button>
     </a>
     
-    <button class="btn btn-green">Save Payment</button>
+  <div class="dropdown">
+          <button type="button" class="btn btn-green">Save ▼</button>
+          <div class="dropdown-menu">
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save">Save</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&new">Save & New</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&close">Save & Close</button>
+          </div>
+        </div>
   </div>
 </div>
+<script src=" {% static 'sowaf/styles/script.js' %} "></script>
 </body>
 </html>

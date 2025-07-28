@@ -15,6 +15,7 @@ urlpatterns = [
     path('customers/add/', views.add_customer, name='add-customer'),
     path('customers/edit/<str:pk>/', views.edit_customer, name='edit-customer'),
     path('customer/delete/<str:pk>/', views.delete_customer, name='delete-customer'),
+    path('customers/import/import-customers', views.import_customers, name='import-customers'),
     # clents urls
     path('clients/', views.clients, name='clients'),
     path('clients/add/', views.add_client, name='add-client'),

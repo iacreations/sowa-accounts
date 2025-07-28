@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Credit Card Credit Form</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'sowaf/styles/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'sowaf/styles/bootsrap.min.css' %}" />
   <style>
     * {
       box-sizing: border-box;
@@ -267,16 +269,21 @@
         <!-- Footer Buttons -->
         <div class="footer">
           <div>
-            <a href="./Expenses.html"><button class="btn-cancel">Cancel</button></a>
+           <a href="{% url 'sowaf:expenses' %}" class="btn btn-green" style="text-decoration:none;">Cancel</a>
           </div>
-          <div>
-            <button class="btn-primary">Save</button>
-            <button class="btn-primary">Save & Close</button>
+          <div class="dropdown">
+          <button type="button" class="btn btn-green">Save ▼</button>
+          <div class="dropdown-menu">
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save">Save</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&new">Save & New</button>
+            <button type="submit" name="save_action" style="font-size: 1em;" value="save&close">Save & Close</button>
           </div>
+        </div>
         </div>
       </div>
     
       <!-- JavaScript -->
+       <script src=" {% static 'sowaf/styles/script.js' %} "></script>
       <script>
         // Toggle collapsible sections
         document.querySelectorAll(".collapsible").forEach(btn => {

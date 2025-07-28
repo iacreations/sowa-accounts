@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sales Entry Form</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
+      <link rel="stylesheet" href="{% static 'sowaf/styles/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'sowaf/styles/bootsrap.min.css' %}" />
   <style>
     * {
       box-sizing: border-box;
@@ -326,7 +330,7 @@
 
   <!-- Footer -->
   <div class="footer">
-    <a href="./Sales.html"><button class="btn-cancel">Cancel</button></a>
+    <a href="{% url 'sowaf:sales' %}"><button class="btn-cancel">Cancel</button></a>
    <div class="dropdown">
           <button type="button" class="btn btn-green">Save ▼</button>
           <div class="dropdown-menu">
@@ -337,7 +341,7 @@
         </div>
   </div>
 </div>
-
+<script src=" {% static 'sowaf/styles/script.js' %} "></script>
 <script>
   // Add row to the table
   function addRow() {

@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
+import openpyxl
+import csv
+import io
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from . models import Newcustomer, Newsupplier,Newclient,Newemployee,Newasset,Newinvoice,InvoiceItem
@@ -251,7 +254,77 @@ def delete_customer(request, pk):
     customer = get_object_or_404(Newcustomer, pk=pk)
     customer.delete()
     return redirect('sowaf:customers')
+# importing a customer sheet
+def import_customers(request):
+    
+        if request.method == 'POST' and request.FILES.get('excel_file'):
+            excel_file = request.FILES['excel_file']
+        file_name = excel_file.name.lower()
 
+        try:
+            if file_name.endswith('.csv'):
+                decoded_file = excel_file.read().decode('utf-8')
+                io_string = io.StringIO(decoded_file)
+                reader = csv.reader(io_string)
+                next(reader)  # Skip header row
+
+                for row in reader:
+                    name, company, email, phone, mobile, website, tin, balance, date_str, street1, street2, city, province, postal, country, actions, notes = row
+                    Newcustomer.objects.create(
+                        customer_name=name,
+                        company_name=company,
+                        email=email,
+                        phone_number=phone,
+                        mobile_number=mobile,
+                        website=website,
+                        tin_number=tin,
+                        opening_balance=balance,
+                        registration_date=date_str,
+                        street_one=street1,
+                        street_two=street2,
+                        city=city,
+                        province=province,
+                        postal_code=postal,
+                        country=country,
+                        actions=actions,
+                        notes=notes,
+                    )
+            
+            elif file_name.endswith('.xlsx'):
+                wb = openpyxl.load_workbook(excel_file)
+                sheet = wb.active
+
+                for row in sheet.iter_rows(min_row=2, values_only=True):
+                    name, company, email, phone, mobile, website, tin, balance, date_str, street1, street2, city, province, postal, country, actions, notes = row
+                    Newcustomer.objects.create(
+                        customer_name=name,
+                        company_name=company,
+                        email=email,
+                        phone_number=phone,
+                        mobile_number=mobile,
+                        website=website,
+                        tin_number=tin,
+                        opening_balance=balance,
+                        registration_date=date_str,
+                        street_one=street1,
+                        street_two=street2,
+                        city=city,
+                        province=province,
+                        postal_code=postal,
+                        country=country,
+                        actions=actions,
+                        notes=notes,
+                    )
+            else:
+                messages.error(request, "Unsupported file type. Please upload a .csv or .xlsx file.")
+                return redirect('sowaf:customers')
+
+            messages.success(request, "Customers imported successfully!")
+
+        except Exception as e:
+            messages.error(request, f"Import failed: {str(e)}")
+            return redirect('sowaf:customers')
+        return redirect('sowaf:customers')   
 # clients view
 
 def clients(request):

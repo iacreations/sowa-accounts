@@ -1,9 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Pay Down Credit Card</title>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
+      <link rel="stylesheet" href="{% static 'sowaf/styles/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'sowaf/styles/bootsrap.min.css' %}" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -165,8 +169,8 @@
       </div>
 
       <div class="actions">
-        <a href="./Expenses.html">
-          <button type="button" class="btn btn-cancel">Cancel</button>
+        <a href="{% url 'sowaf:expenses' %}" class="btn btn-cancel">
+         Cancel
         </a>
        <div class="dropdown">
           <button type="button" class="btn btn-green">Save ▼</button>
@@ -179,7 +183,7 @@
       </div>
     </form>
   </div>
-
+<script src=" {% static 'sowaf/styles/script.js' %} "></script>
   <script>
     function toggleMemo() {
       const memo = document.getElementById('memoContent');

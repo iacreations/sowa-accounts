@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+<
+  {% load static %}!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Import Bills</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
+  <link rel="stylesheet" href="{% static 'sowaf/styles/style.css' %}" />
+ <link rel="stylesheet" href="{% static 'sowaf/styles/bootsrap.min.css' %}" />
   <style>
     * {
       box-sizing: border-box;
@@ -202,10 +206,7 @@
         </div>
 
         <div style="max-width: 900px; margin: 15px auto 0; text-align: left;">
-          <a href="./Expenses.html">
-            <button type="button" class="btn-cancel" style="background: #f5f5f5; color: #333; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
-              Cancel
-            </button>
+          <a href="{% url 'sowaf:expenses' %}" class="btn btn-green" style="text-decoration:none;">Cancel</a>
           </a>
         </div>
       </div>
@@ -213,6 +214,6 @@
   </div>
 
 
-  
+  <script src=" {% static 'sowaf/styles/script.js' %} "></script>
 </body>
 </html>
