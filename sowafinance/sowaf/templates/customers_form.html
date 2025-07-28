@@ -245,15 +245,18 @@
         <div class="collapsible-header">Actions</div>
         <div class="collapsible-content form-row">
           <div class="field"><label for='actions'>Actions</label>
-            <select name='actions' value="{{ customer.actions|default_if_none:'' }}">
+            <select name='actions'>
               <option value="">--- record an action to be done ---</option>
-              <option value="create invoice"><a>create invoice</a></option>
-              <option value="create a sales receipt"><a>create a sales receipt</a></option>
-              <option value="create a charge"><a>create a charge</a></option>
-              <option value="create a time activity"><a>create a time activity</a></option>
-              <option value="create a task"><a>create a task</a></option>
-              <option value="make inactive"> <a>make inactive</a> </option>
+              <option value="create invoice" {% if customer.actions == "create invoice" %}selected{% endif %}>create invoice</option>
+              <option value="create a sales receipt" {% if customer.actions == "create a sales receipt" %}selected{% endif %}>create a sales receipt</option>
 
+              <option value="create a sales receipt" {% if customer.actions == "create a sales receipt" %}selected{% endif %}>create a charge</option>
+
+              <option value="create a sales receipt" {% if customer.actions == "create a sales receipt" %}selected{% endif %}>create a time activity</option>
+
+              <option value="create a sales receipt" {% if customer.actions == "create a sales receipt" %}selected{% endif %}>create a task</option>
+
+              <option value="create a sales receipt" {% if customer.actions == "create a sales receipt" %}selected{% endif %}>make inactive</option>
             </select>
           </div>
         </div>

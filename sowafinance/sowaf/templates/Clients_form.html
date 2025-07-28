@@ -79,7 +79,7 @@
 
       <!-- Company Info -->
         {% csrf_token %}
-        
+
         {% if messages %}
       {% for message in messages %}
         {% if messages.tags == 'error' %}
@@ -130,10 +130,10 @@
           <div class="field"><label>Payment Terms</label><input type="text" name="payment_terms" value="{{ client.payment_terms|default_if_none:'' }}"></div>
           <div class="field">
             <label>Preferred Currency <span style="color:red;">*</span></label>
-            <select style="font-size: 1em; width: 100%;" name="currency" value="{{ client.currency|default_if_none:'' }}" required>
+            <select style="font-size: 1em; width: 100%;" name="currency" required>
               <option value="currency">Select Currency</option>
-              <option value="{{ client.currency|default_if_none:'' }}">UGX</option>
-              <option value="{{ client.currency|default_if_none:'' }}">USD</option>
+              <option value="UGX" {% if client.currency == "UGX" %}selected{% endif %}>UGX</option>
+              <option value="USD" {% if client.currency == "USD" %}selected{% endif %}>USD</option>
             </select>
           </div>
         </div>

@@ -99,10 +99,7 @@
     input{
       font-size: 1em;
     }
-    .option{
 
-        font-size: 1em;
-    }
   </style>
 </head>
 <body>
@@ -134,13 +131,19 @@
           <div class="field"><label for="company_name">Company Name *</label><input type="text" name="company_name" value="{{ supplier.company_name|default_if_none:'' }}" required></div>
           <div class="field">
             <label for="supplier_type" style="font-size: 1em;">Supplier Type</label>
-            <select name=supplier_type style="font-size: 1em; width: 100%;" value="{{ supplier.supplier_type|default_if_none:'' }}">
-              <option class="option" value="goods">Goods</option>
-              <option class="option" value="services">Services</option>
-              <option class="option" value="both">Both</option>
+            <select name="supplier_type" style="font-size: 1em; width: 100%;" >
+              <option class="" value="Goods" {% if supplier.supplier_type == "Goods" %}selected{% endif %}>Goods</option>
+              <option class="" value="Services" {% if supplier.supplier_type == "Services" %}selected{% endif %}>Services</option>
+              <option class="" value="Both" {% if supplier.supplier_type == "Both" %}selected{% endif %}>Both</option>
             </select>
             </div>
-          <div class="field"><label for="status">Status</label><select name="status" value="{{ supplier.status|default_if_none:'' }}" style="font-size: 1em; width: 100%;"><option class="option">Active</option><option class="option">Inactive</option></select></div>
+          <div class="field">
+            <label for="status">Status</label>
+            <select name="status" style="font-size: 1em; width: 100%;">
+              <option class="Active" {% if supplier.status == "Active" %}selected{% endif %}>Active</option>
+              <option class="Inactive" {% if supplier.status == "Inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+          </div>
           <div class="field"><label for="contact_person">Contact Person</label><input type="text" name="contact_person" value="{{ supplier.contact_person|default_if_none:'' }}"></div>
           <div class="field"><label for="contact_position">Contact Position</label><input type="text" name="contact_position" value="{{ supplier.contact_position|default_if_none:'' }}"></div>
           <div class="field"><label for="contact">Phone Number *</label><input type="tel" name="contact" value="{{ supplier.contact|default_if_none:'' }}" required></div>
@@ -179,9 +182,9 @@
           <div class="field">
             <label for="payment_method">Payment Method *</label>
             <select name="payment_method" style="font-size: 1em; width: 100%;" value="{{ supplier.payment_method|default_if_none:'' }}">
-            <option class="option" value="{{ supplier.payment_method|default_if_none:'' }}">Bank Transfer</option>
-            <option class="option" value="{{ supplier.payment_method|default_if_none:'' }}">Cheque</option>
-            <option class="option" value="{{ supplier.payment_method|default_if_none:'' }}">Cash</option>
+            <option class="option" value="Bank" {% if supplier.payment_method == "Bank" %}selected{% endif %}>Bank Transfer</option>
+            <option class="option" value="Cheque" {% if supplier.payment_method == "Cheque" %}selected{% endif %}>Cheque</option>
+            <option class="option" value="Cash" {% if supplier.payment_method == "Cash" %}selected{% endif %}>Cash</option>
           </select>
         </div>
         </div>

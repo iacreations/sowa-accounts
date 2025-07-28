@@ -47,11 +47,11 @@
           <div class="form-group"><label>Custodian / Responsible Person</label><input name="custodian" value="{{ asset.custodian|default_if_none:'' }}" type="text"></div>
           <div class="form-group">
             <label>Status *</label>
-            <select required name="asset_status" value="{{ asset.asset_status|default_if_none:'' }}">
-              <option name="asset_status" value="{{ asset.asset_status|default_if_none:'' }}">----select----</option>
-              <option name="asset_status" value="{{ asset.asset_status|default_if_none:'' }}">Active</option>
-              <option name="asset_status" value="{{ asset.asset_status|default_if_none:'' }}">Disposed</option>
-              <option name="asset_status" value="{{ asset.asset_status|default_if_none:'' }}">Written-Off</option>
+            <select required name="asset_status">
+              <option name="asset_status">----select----</option>
+              <option name="asset_status" value="Active" {% if asset.asset_status == "Active" %}selected{% endif %}>Active</option>
+              <option name="asset_status" value="Disposed" {% if asset.asset_status == "Disposed" %}selected{% endif %}>Disposed</option>
+              <option name="asset_status" value="Written-Off" {% if asset.asset_status == "Written-Off" %}selected{% endif %}>Written-Off</option>
             </select>
           </div>
         </div>

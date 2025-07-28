@@ -205,7 +205,13 @@
     
     <div class="field"><label>First Name *</label><input name="first_name" value="{{ employee.first_name|default_if_none:'' }}" type="text" required></div>
     <div class="field"><label>Last Name *</label><input name="last_name" value="{{ employee.last_name|default_if_none:'' }}" type="text" required></div>
-    <div class="field"><label>Gender</label><select name="gender" value="{{ employee.gender|default_if_none:'' }}"><option>Male</option><option>Female</option><option>Other</option></select></div>
+    <div class="field">
+      <label>Gender</label>
+      <select name="gender">
+        <option value="Male" {% if employee.gender == "Male" %}selected{% endif %} >Male</option>
+        <option value="Female" {% if employee.gender == "Female" %}selected{% endif %}>Female</option>
+      </select>
+    </div>
     <div class="field"><label>Date of Birth</label><input name="dob" value="{{ employee.dob|date:'d/m/Y'|default_if_none:'' }}" type="text" placeholder="dd/mm/yyyy"></div>
     <div class="field"><label>Nationality</label><input name="nationality" value="{{ employee.nationality|default_if_none:'' }}" type="text"></div>
     <div class="field"><label>National ID / SSN / NIN *</label><input name="nin_number" value="{{ employee.nin_number|default_if_none:'' }}" type="text" required></div>
@@ -247,20 +253,21 @@
       <div class="header">
         <div class="field"><label>Job Title *</label><input name="job_title" value="{{ employee.job_title|default_if_none:'' }}" type="text" required></div>
         <div class="field"><label>Department *</label><input name="department" value="{{ employee.department|default_if_none:'' }}" type="text" required></div>
-        <div class="field"><label>Employment Type *</label>
-          <select name="employment_type" value="{{ employee.employment_type|default_if_none:'' }}">
-            <option value="{{ employee.employment_type|default_if_none:'' }}">Full-Time</option>
-            <option value="{{ employee.employment_type|default_if_none:'' }}">Part-Time</option>
-            <option value="{{ employee.employment_type|default_if_none:'' }}">Contract</option>
-            <option value="{{ employee.employment_type|default_if_none:'' }}">Intern</option>
-            <option value="{{ employee.employment_type|default_if_none:'' }}">Volunteer</option>
+        <div class="field">
+          <label>Employment Type *</label>
+          <select name="employment_type">
+            <option value="Full-Time" {% if employee.department == "Full-Time" %}selected{% endif %}>Full-Time</option>
+            <option value="Part-Time" {% if employee.department == "Part-Time" %}selected{% endif %}>Part-Time</option>
+            <option value="Contract" {% if employee.department == "Contract" %}selected{% endif %}>Contract</option>
+            <option value="Intern" {% if employee.department == "Intern" %}selected{% endif %}>Intern</option>
+            <option value="Volunteer" {% if employee.department == "Volunteer" %}selected{% endif %}>Volunteer</option>
           </select>
         </div>
         <div class="field"><label>Status *</label>
           <select name="status" value="{{ employee.status|default_if_none:'' }}">
-            <option value="{{ employee.status|default_if_none:'' }}">Active</option>
-            <option value="{{ employee.status|default_if_none:'' }}">Suspended</option>
-            <option value="{{ employee.status|default_if_none:'' }}">Terminated</option>
+            <option value="Active" {% if employee.status == "Active" %}selected{% endif %} >Active</option>
+            <option value="Suspended" {% if employee.status == "Suspended" %}selected{% endif %} >Suspended</option>
+            <option value="Terminated" {% if employee.status == "Terminated" %}selected{% endif %} >Terminated</option>
           </select>
         </div>
         <div class="field"><label>Date of Hire *</label><input name="hire_date" value="{{ employee.hire_date|date:'d/m/Y'|default_if_none:'' }}" type="text" placeholder="dd/mm/yyyy" required></div>
@@ -278,10 +285,10 @@
         <div class="field"><label>Pay Frequency *</label><input name="payment_frequency" value="{{ employee.payment_frequency|default_if_none:'' }}" type="text" placeholder="e.g. Monthly" required></div>
         <div class="field">
           <label>Payment Method *</label>
-          <select name="payment_method" value="{{ employee.payment_method|default_if_none:'' }}">
-            <option value="{{ employee.payment_method|default_if_none:'' }}">Bank Transfer</option>
-            <option value="{{ employee.payment_method|default_if_none:'' }}">Cash</option>
-            <option value="{{ employee.payment_method|default_if_none:'' }}">Cheque</option>
+          <select name="payment_method">
+            <option value="Bank Transfer" {% if employee.payment_method == "Bank Transfer" %}selected{% endif %}>Bank Transfer</option>
+            <option value="Cash" {% if employee.payment_method == "Cash" %}selected{% endif %}>Cash</option>
+            <option value="Cheque" {% if employee.payment_method == "Cheque" %}selected{% endif %}>Cheque</option>
           </select>
         </div>
         <div class="field"><label>Bank Name</label><input name="bank_name" value="{{ employee.bank_name|default_if_none:'' }}" type="text"></div>

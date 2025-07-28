@@ -44,10 +44,10 @@
       <div class="form-group">
         <label>Type</label>
         <select id="typeSelect" onchange="handleTypeChange()">
-          <option value="Non-Inventory">Non-Inventory</option>
-          <option value="Inventory">Inventory</option>
-          <option value="Service">Service</option>
-          <option value="Bundle">Bundle</option>
+          <option value="Non-Inventory" {% if employee.payment_method == "Non-Inventory" %}selected{% endif %}>Non-Inventory</option>
+          <option value="Inventory" {% if employee.payment_method == "Inventory" %}selected{% endif %}>Inventory</option>
+          <option value="Service" {% if employee.payment_method == "Service" %}selected{% endif %}>Service</option>
+          <option value="Bundle" {% if employee.payment_method == "Bundle" %}selected{% endif %}>Bundle</option>
         </select>
       </div>
       <div class="form-group"><label>Name</label><input type="text"></div>
@@ -66,7 +66,11 @@
       <div class="form-group"><label>Sales Price / Rate</label><input type="number"></div>
       <div class="form-group">
         <label>Income Account</label>
-        <select><option>Sales</option><option>Services Income</option><option>Other Income</option></select>
+        <select name="income_account">
+          <option value="Sales" {% if employee.payment_method == "Sales" %}selected{% endif %}>Sales</option>
+          <option value="Services Income" {% if employee.payment_method == "Services Income" %}selected{% endif %}>Services Income</option>
+          <option value="Other Income" {% if employee.payment_method == "Other Income" %}selected{% endif %}>Other Income</option>
+        </select>
       </div>
     </div>
   </div>
