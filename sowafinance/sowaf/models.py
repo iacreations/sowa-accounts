@@ -119,7 +119,7 @@ class Newclient(models.Model):
     start_date = models.DateTimeField(null=True, blank=True)
     contact_name= models.CharField(max_length=255,null=True, blank=True)
     position = models.CharField(max_length=255,null=True, blank=True)
-    contact = models.CharField(max_length=255,null=True, blank=True)
+    contact = models.CharField(max_length=10,null=True, blank=True)
     contact_email = models.CharField(max_length=255,null=True, blank=True)
     tin = models.CharField(max_length=10,null=True, blank=True)
     credit_limit = models.DecimalField(max_digits=255, decimal_places=2, default=0,null=True, blank=True)

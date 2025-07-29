@@ -145,33 +145,33 @@
         <div class="collapsible-content form-row">
           <div class="field">
             <label>Industry / Sector <span style="color:red;">*</span></label>
-            <select style="font-size: 1em; width: 100%;" name="industry" value="{{ client.industry|default_if_none:'' }}" required>
-              <option value="">Select Industry</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Consumer products</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Energy and natural resources</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Financial services</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Healthcare</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Industrial products</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Not for profit</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Individual private clients</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Public sector</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Real estate and construction</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Services</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Technology, media and telecommunications</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Travel, tourism and leisure</option>
-              <option value="{{ client.industry|default_if_none:'' }}">Others</option>
+            <select style="font-size: 1em; width: 100%;" name="industry" required>
+              <option value="industry">Select Industry</option>
+              <option value="Consumer products" {% if client.industry == "Consumer products" %}selected{% endif %}>Consumer products</option>
+              <option value="Energy and natural resources" {% if client.industry == "Energy and natural resources" %}selected{% endif %}>Energy and natural resources</option>
+              <option value="Financial services" {% if client.industry == "Financial services" %}selected{% endif %}>Financial services</option>
+              <option value="Healthcare" {% if client.industry == "Healthcare" %}selected{% endif %}>Healthcare</option>
+              <option value="Industrial products" {% if client.industry == "Industrial products" %}selected{% endif %}>Industrial products</option>
+              <option value="Not for profit" {% if client.industry == "Not for profit" %}selected{% endif %}>Not for profit</option>
+              <option value="Individual private clients" {% if client.industry == "Individual private clients" %}selected{% endif %}>Individual private clients</option>
+              <option value="Public sector" {% if client.industry == "Public sector" %}selected{% endif %}>Public sector</option>
+              <option value="Real estate and construction" {% if client.industry == "Real estate and construction" %}selected{% endif %}>Real estate and construction</option>
+              <option value="Services" {% if client.industry == "Services" %}selected{% endif %}>Services</option>
+              <option value="Technology, media and telecommunications" {% if client.industry == "Technology, media and telecommunications" %}selected{% endif %}>Technology, media and telecommunications</option>
+              <option value="Travel, tourism and leisure" {% if client.industry == "Travel, tourism and leisure" %}selected{% endif %}>Travel, tourism and leisure</option>
+              <option value="Others" {% if client.industry == "Others" %}selected{% endif %}>Others</option>
             </select>
           </div>
           <div class="field"><label>Status <span style="color:red;">*</span></label>
-            <select style="font-size: 1em; width: 100%;" name="status" value="{{ client.status|default_if_none:'' }}" required>
-              <option value="{{ client.status|default_if_none:'' }}">Select Status</option>
-              <option value="{{ client.status|default_if_none:'' }}">Active</option>
-              <option value="{{ client.status|default_if_none:'' }}">Inactive</option>
+            <select style="font-size: 1em; width: 100%;" name="status" required>
+              <option value="status">Select Status</option>
+              <option value="Active" {% if client.status == "Active" %}selected{% endif %}>Active</option>
+              <option value="Inactive" {% if client.status == "Inactive" %}selected{% endif %}>Inactive</option>
             </select>
           </div>
           <div class="field" style="flex: 1 1 100%;">
             <label>Notes</label>
-            <textarea rows="3" name="notes">value="{{ client.notes|default_if_none:'' }}"</textarea>
+            <textarea rows="3" name="notes">{{ client.notes|default_if_none:'' }}</textarea>
           </div>
         </div>
       </div>

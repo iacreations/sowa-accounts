@@ -16,16 +16,21 @@ urlpatterns = [
     path('customers/edit/<str:pk>/', views.edit_customer, name='edit-customer'),
     path('customer/delete/<str:pk>/', views.delete_customer, name='delete-customer'),
     path('customers/import/import-customers', views.import_customers, name='import-customers'),
+    path('templates/customers/', views.download_customers_template, name='import_customers_template'),
     # clents urls
     path('clients/', views.clients, name='clients'),
     path('clients/add/', views.add_client, name='add-client'),
     path('clients/edit/<str:pk>/', views.edit_client, name='edit-client'),
     path('clients/delete/<str:pk>/', views.delete_client, name='delete-client'),
+    path('clients/import/import-clients', views.import_clients, name='import-clients'), 
+    path('templates/clients/', views.download_clients_template, name='import_clients_template'),
     # employee urls
     path('employees/', views.employee, name='employees'),
     path('employees/add/employee', views.add_employees, name='add-employee'),
     path('employees/edit/<str:pk>/', views.edit_employee, name='edit-employee'),
     path('employees/delete/<str:pk>/', views.delete_employee, name='delete-employee'),
+    path('employees/import/import-employees', views.import_employees, name='import-employees'),
+    path('templates/employees/', views.download_employees_template, name='import_employees_template'),
     # --------------
     path('miscellaneous/', views.miscellaneous, name='miscellaneous'),
     # -------------
@@ -42,8 +47,11 @@ urlpatterns = [
     path('supplier/add/suppliers', views.add_suppliers, name='add-suppliers'),
     path('supplier/edit/<str:pk>', views.edit_supplier, name='edit-supplier'),
     path('supplier/delete/<str:pk>', views.delete_supplier, name='delete-supplier'),
+    # expenses url
     path('expenses/', views.expenses, name='expenses'),
+    # tasks url
     path('tasks/', views.tasks, name='tasks'),
+    # taxes url
     path('taxes/', views.taxes, name='taxes'),
     # path('invoices/', views.invoice, name='invoices'),
     path('invoices/add/invoice', views.add_invoice, name='add-invoice'),

@@ -15,12 +15,18 @@
         </button>
       </a>
 
-        <button class="button">
-          <span class="button_text">IMPORT</span>
-          <span class="button_icon">
-            <i class='bx bx-import' ></i>
-          </span>
-        </button>
+        <div>
+       <form action="{% url 'sowaf:import-customers' %}" method="POST" enctype="multipart/form-data" style="display: flex;">
+         {% csrf_token %}
+        <input type="file" name="excel_file" accept=".xlsx, .xls" required style="display: none;" id="excelInput" onchange="this.form.submit()" />
+        <label for="excelInput" class="button" style="cursor: pointer;">
+         <span class="button_text">IMPORT</span>
+        <span class="button_icon">
+        <i class='bx bx-upload'></i>
+        </span>
+       </label>
+         </form>
+       </div>
         <button class="button">
           <span class="button_text">EXPORT</span>
           <span class="button_icon">
@@ -78,6 +84,18 @@
                        <tr>
       <td colspan="6">No customers available.</td>
     </tr>
+    <tr>
+      <td colspan="6">
+      {% if messages %}
+      {% for message in messages %}
+        {% if messages.tags == 'error' %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% else %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+      </td>
           {% endfor %}
         </tbody>
       </table>

@@ -14,13 +14,18 @@
           </span>
         </button>
       </a>
-      <a href="{% url 'sowaf:add-employee' %}" style="text-decoration: none;">
-        <button class="button">
-          <span class="button_text">IMPORT</span>
-          <span class="button_icon">
-            <i class='bx bx-folder-plus'></i>
-          </span>
-        </button>
+      <div>
+       <form action="{% url 'sowaf:import-employees' %}" method="POST" enctype="multipart/form-data" style="display: flex;">
+         {% csrf_token %}
+        <input type="file" name="excel_file" accept=".xlsx, .xls, .csv" required style="display: none;" id="excelInput" onchange="this.form.submit()" />
+        <label for="excelInput" class="button" style="cursor: pointer;">
+         <span class="button_text">IMPORT</span>
+        <span class="button_icon">
+        <i class='bx bx-upload'></i>
+        </span>
+       </label>
+         </form>
+       </div>
       </a>
             <a href="{% url 'sowaf:add-employee' %}" style="text-decoration: none;">
         <button class="button">
@@ -76,12 +81,31 @@
             </i></td>
             <td>Retire/inactive</td>
           </tr>
+          
            {% empty %}    
         <tr>
       <td colspan="6">No customers available.</td>
     </tr>
+    <tr>
+      <td colspan="6">
+      {% if messages %}
+      {% for message in messages %}
+        {% if messages.tags == 'error' %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% else %}
+        <p style="color:green; text-align:center;">{{message}}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+      </td>
+      
          {% endfor %}
         </tbody>
       </table>
+    <a href="{% url 'sowaf:import_employees_template' %}" style="text-decoration: none; float:right;">
+        <button class="button">
+          <span class="button_text">Template</span>
+        </button>
+      </a>
     </div>
 {% include 'includes/footer.html' %}

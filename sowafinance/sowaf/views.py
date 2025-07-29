@@ -1,8 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from openpyxl import Workbook
+from tempfile import NamedTemporaryFile
 from datetime import datetime
 import openpyxl
 import csv
 import io
+import os
+from django.core.files import File
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from . models import Newcustomer, Newsupplier,Newclient,Newemployee,Newasset,Newinvoice,InvoiceItem
@@ -255,6 +261,23 @@ def delete_customer(request, pk):
     customer.delete()
     return redirect('sowaf:customers')
 # importing a customer sheet
+# template for the download
+def download_customers_template(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Customer Template"
+
+    headers = [
+        'name', 'company', 'email', 'phone', 'mobile', 'website', 'tin', 'balance', 'date_str', 'street1', 'street2', 'city', 'province', 'postal_code', 'country', 'actions', 'notes', 'logo'
+    ]
+    ws.append(headers)
+
+    with NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="customer_template.xlsx"'
+        return response
 def import_customers(request):
     
         if request.method == 'POST' and request.FILES.get('excel_file'):
@@ -269,8 +292,8 @@ def import_customers(request):
                 next(reader)  # Skip header row
 
                 for row in reader:
-                    name, company, email, phone, mobile, website, tin, balance, date_str, street1, street2, city, province, postal, country, actions, notes = row
-                    Newcustomer.objects.create(
+                   name, company, email, phone, mobile, website, tin, balance, date_str, street1, street2, city, province, postal_code, country, actions, notes, logo = row
+                   Newcustomer.objects.create(
                         customer_name=name,
                         company_name=company,
                         email=email,
@@ -284,18 +307,26 @@ def import_customers(request):
                         street_two=street2,
                         city=city,
                         province=province,
-                        postal_code=postal,
+                        postal_code=postal_code,
                         country=country,
                         actions=actions,
                         notes=notes,
                     )
+                   if logo:
+                        image_path = os.path.join(settings.MEDIA_ROOT, 'uploads', logo)
+                        if os.path.exists(image_path):
+                            with open(image_path, 'rb') as f:
+                                Newcustomer.logo.save(logo, File(f), save=False)
+                        else:
+                            messages.warning(request, f"Image file '{logo}' not found.")
+                            Newcustomer.save()
             
             elif file_name.endswith('.xlsx'):
                 wb = openpyxl.load_workbook(excel_file)
                 sheet = wb.active
 
                 for row in sheet.iter_rows(min_row=2, values_only=True):
-                    name, company, email, phone, mobile, website, tin, balance, date_str, street1, street2, city, province, postal, country, actions, notes = row
+                    name, company, email, phone, mobile, website, tin, balance, date_str, street1, street2, city, province, postal, country, actions, notes, logo = row
                     Newcustomer.objects.create(
                         customer_name=name,
                         company_name=company,
@@ -315,12 +346,17 @@ def import_customers(request):
                         actions=actions,
                         notes=notes,
                     )
+                    if logo:
+                        image_path = os.path.join(settings.MEDIA_ROOT, 'uploads', logo)
+                        if os.path.exists(image_path):
+                            with open(image_path, 'rb') as f:
+                                Newcustomer.logo.save(logo, File(f), save=True)
+                        else:
+                            messages.warning(request, f"Image file '{logo}' not found.")
+                            Newcustomer.save()
             else:
                 messages.error(request, "Unsupported file type. Please upload a .csv or .xlsx file.")
                 return redirect('sowaf:customers')
-
-            messages.success(request, "Customers imported successfully!")
-
         except Exception as e:
             messages.error(request, f"Import failed: {str(e)}")
             return redirect('sowaf:customers')
@@ -423,14 +459,144 @@ def edit_client(request, pk):
         client.save()
         return redirect('sowaf:clients')  # Or wherever your list view is
 
-    return render(request, 'clients_form.html', {'client': client})
+    return render(request, 'Clients_form.html', {'client': client})
 # client delete view
 def delete_client(request, pk):
     client = get_object_or_404(Newclient, pk=pk)
     client.delete()
     return redirect('sowaf:clients')
 
-# employee view
+# importing the client
+def download_clients_template(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "clients Template"
+
+    headers = [
+        'company', 'phone', 'company_email', 'address', 'country',
+        'registration_number', 'start_date', 'contact_name',
+        'position', 'contact', 'contact_email', 'tin', 'credit_limit',
+        'payment_terms', 'currency', 'industry', 'status',
+         'notes', 'logo'
+    ]
+    ws.append(headers)
+
+    with NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="clients_template.xlsx"'
+        return response
+def handle_logo_upload(client, logo):
+    if logo:
+        image_path = os.path.join(settings.MEDIA_ROOT, 'uploads', logo)
+        if os.path.exists(image_path):
+            with open(image_path, 'rb') as f:
+                client.logo.save(logo, File(f), save=True)
+        else:
+            messages.warning(None, f"Image file '{logo}' not found.")
+
+
+def parse_start_date(value):
+    try:
+        return datetime.strptime(str(value), "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return None
+
+
+def import_clients(request):
+    if request.method != 'POST' or 'excel_file' not in request.FILES:
+        messages.error(request, "No file uploaded.")
+        return redirect('sowaf:clients')
+
+    excel_file = request.FILES['excel_file']
+    file_name = excel_file.name.lower()
+
+    try:
+        if file_name.endswith('.csv'):
+            decoded_file = excel_file.read().decode('utf-8')
+            io_string = io.StringIO(decoded_file)
+            reader = csv.reader(io_string)
+            next(reader)  # Skip header row
+
+            for row in reader:
+                (
+                    company, phone, company_email, address, country,
+                    registration_number, start_date, contact_name,
+                    position, contact, contact_email, tin, credit_limit,
+                    payment_terms, currency, industry, status,
+                    notes, logo
+                ) = row
+
+                client = Newclient.objects.create(
+                    company=company,
+                    phone=phone,
+                    company_email=company_email,
+                    address=address,
+                    country=country,
+                    reg_number=registration_number,
+                    start_date=parse_start_date(start_date),
+                    contact_name=contact_name,
+                    position=position,
+                    contact=contact,
+                    contact_email=contact_email,
+                    tin=tin,
+                    credit_limit=credit_limit,
+                    payment_terms=payment_terms,
+                    currency=currency,
+                    industry=industry,
+                    status=status,
+                    notes=notes,
+                    logo=logo,
+                )
+                handle_logo_upload(client, logo)
+
+        elif file_name.endswith('.xlsx'):
+            wb = openpyxl.load_workbook(excel_file)
+            sheet = wb.active
+
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                (
+                    company, phone, company_email, address, country,
+                    registration_number, start_date, contact_name,
+                    position, contact, contact_email, tin, credit_limit,
+                    payment_terms, currency, industry, status,
+                    notes, logo
+                ) = row
+
+                client = Newclient.objects.create(
+                    company=company,
+                    phone=phone,
+                    company_email=company_email,
+                    address=address,
+                    country=country,
+                    reg_number=registration_number,
+                    start_date=parse_start_date(start_date),
+                    contact_name=contact_name,
+                    position=position,
+                    contact=contact,
+                    contact_email=contact_email,
+                    tin=tin,
+                    credit_limit=credit_limit,
+                    payment_terms=payment_terms,
+                    currency=currency,
+                    industry=industry,
+                    status=status,
+                    notes=notes,
+                    logo=logo,
+                )
+                handle_logo_upload(client, logo)
+
+        else:
+            messages.error(request, "Unsupported file type. Please upload a .csv or .xlsx file.")
+            return redirect('sowaf:clients')
+
+        messages.success(request, "Client data imported successfully.")
+        return redirect('sowaf:clients')
+
+    except Exception as e:
+        messages.error(request, f"Import failed: {str(e)}")
+        return redirect('sowaf:clients')
 def employee(request):
     employees = Newemployee.objects.all()
 
@@ -576,6 +742,175 @@ def delete_employee(request, pk):
     employee.delete()
     return redirect('sowaf:employees')
 
+# importing employees
+def download_employees_template(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Employees Template"
+
+    headers = [
+        'first_name', 'last_name', 'gender', 'dob', 'nationality',
+        'nin_number', 'tin_number', 'profile_picture', 'phone_number', 'email_address',
+        'residential_address', 'emergency_person', 'emergency_contact', 'relationship',
+        'job_title', 'department', 'employment_type', 'status', 'hire_date', 'supervisor',
+        'salary', 'payment_frequency', 'payment_method', 'bank_name', 'bank_account',
+        'bank_branch', 'nssf_number', 'insurance_provider', 'taxable_allowances',
+        'intaxable_allowances', 'additional_notes'
+    ]
+    ws.append(headers)
+
+    with NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="employees_template.xlsx"'
+        return response
+def handle_profile_picture_upload(employee, profile_picture):
+    if profile_picture:
+        image_path = os.path.join(settings.MEDIA_ROOT, 'uploads', profile_picture)
+        if os.path.exists(image_path):
+            with open(image_path, 'rb') as f:
+                employee.profile_picture.save(profile_picture, File(f), save=True)
+        else:
+            messages.warning(None, f"Image file '{profile_picture}' not found.")
+
+
+# Parse DOB (multiple formats)
+def parse_dob_safe(dob):
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(str(dob), fmt).date()
+        except (ValueError, TypeError):
+            continue
+    return None
+
+# Parse Hire Date (multiple formats)
+def parse_hire_date_safe(hire_date):
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(str(hire_date), fmt).date()
+        except (ValueError, TypeError):
+            continue
+    return None
+
+def import_employees(request):
+    if request.method != 'POST' or 'excel_file' not in request.FILES:
+        messages.error(request, "No file uploaded.")
+        return redirect('sowaf:employees')
+
+    excel_file = request.FILES['excel_file']
+    file_name = excel_file.name.lower()
+
+    try:
+        if file_name.endswith('.csv'):
+            decoded_file = excel_file.read().decode('utf-8')
+            io_string = io.StringIO(decoded_file)
+            reader = csv.reader(io_string)
+            next(reader)  # Skip header row
+
+            for row in reader:
+                (
+                first_name,last_name,gender,dob,nationality,nin_number,tin_number,profile_picture,phone_number,email_address,residential_address,emergency_person,emergency_contact,relationship,job_title,department,employment_type,status,hire_date,supervisor,salary,payment_frequency,payment_method,bank_name,bank_account,bank_branch,nssf_number,insurance_provider,taxable_allowances,intaxable_allowances,additional_notes
+                ) = row
+                
+                dob = parse_dob_safe(dob)
+                hire_date = parse_hire_date_safe(hire_date)
+                profile_picture = profile_picture.strip() if profile_picture else ''
+
+
+                employee = Newemployee.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    gender=gender,
+                    dob=dob,
+                    nationality=nationality,
+                    nin_number=nin_number,
+                    tin_number=tin_number,
+                    profile_picture=profile_picture,
+                    phone_number=str(phone_number).rstrip('.0') if phone_number else '',
+                    email_address=email_address,
+                    residential_address=residential_address,
+                    emergency_person=emergency_person,
+                    emergency_contact=emergency_contact,
+                    relationship=relationship,
+                    job_title=job_title,
+                    department=department,
+                    employment_type=employment_type,
+                    status=status,
+                    hire_date=hire_date,
+                    supervisor=supervisor,
+                    salary=salary,
+                    payment_frequency=payment_frequency,
+                    payment_method=payment_method,
+                    bank_name=bank_name,
+                    bank_account=bank_account,
+                    bank_branch=bank_branch,
+                    nssf_number=nssf_number,
+                    insurance_provider=insurance_provider,
+                    taxable_allowances=taxable_allowances,
+                    intaxable_allowances=intaxable_allowances,
+                    additional_notes=additional_notes,
+                )
+                handle_profile_picture_upload(employee, profile_picture)
+
+        elif file_name.endswith('.xlsx'):
+            wb = openpyxl.load_workbook(excel_file)
+            sheet = wb.active
+
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                (
+                first_name,last_name,gender,dob,nationality,nin_number,tin_number,profile_picture,phone_number,email_address,residential_address,emergency_person,emergency_contact,relationship,job_title,department,employment_type,status,hire_date,supervisor,salary,payment_frequency,payment_method,bank_name,bank_account,bank_branch,nssf_number,insurance_provider,taxable_allowances,intaxable_allowances,additional_notes
+                ) = row
+
+                dob = parse_dob_safe(dob)
+                hire_date = parse_hire_date_safe(hire_date)
+                profile_picture = profile_picture.strip() if profile_picture else ''
+
+                employee = Newemployee.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    gender=gender,
+                    dob=dob,
+                    nationality=nationality,
+                    nin_number=nin_number,
+                    tin_number=tin_number,
+                    profile_picture=profile_picture,
+                    phone_number=str(phone_number).rstrip('.0') if phone_number else '',
+                    email_address=email_address,
+                    residential_address=residential_address,
+                    emergency_person=emergency_person,
+                    emergency_contact=emergency_contact,
+                    relationship=relationship,
+                    job_title=job_title,
+                    department=department,
+                    employment_type=employment_type,
+                    status=status,
+                    hire_date=hire_date,
+                    supervisor=supervisor,
+                    salary=salary,
+                    payment_frequency=payment_frequency,
+                    payment_method=payment_method,
+                    bank_name=bank_name,
+                    bank_account=bank_account,
+                    bank_branch=bank_branch,
+                    nssf_number=nssf_number,
+                    insurance_provider=insurance_provider,
+                    taxable_allowances=taxable_allowances,
+                    intaxable_allowances=intaxable_allowances,
+                    additional_notes=additional_notes,
+                )
+                handle_profile_picture_upload(employee, profile_picture)
+
+        else:
+            messages.error(request, "Unsupported file type. Please upload a .csv or .xlsx file.")
+            return redirect('sowaf:employees')
+
+        messages.success(request, "employee data imported successfully.")
+        return redirect('sowaf:employees')
+
+    except Exception as e:
+        messages.error(request, f"Import failed: {str(e)}")
+        return redirect('sowaf:employees')
 # expenses view
 def expenses(request):
 
