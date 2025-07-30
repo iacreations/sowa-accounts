@@ -18,11 +18,11 @@
         <div>
        <form action="{% url 'sowaf:import-customers' %}" method="POST" enctype="multipart/form-data" style="display: flex;">
          {% csrf_token %}
-        <input type="file" name="excel_file" accept=".xlsx, .xls" required style="display: none;" id="excelInput" onchange="this.form.submit()" />
+        <input type="file" name="excel_file" accept=".xlsx, .xls, .csv" required style="display: none;" id="excelInput" onchange="this.form.submit()" />
         <label for="excelInput" class="button" style="cursor: pointer;">
          <span class="button_text">IMPORT</span>
         <span class="button_icon">
-        <i class='bx bx-upload'></i>
+        <i class='bx bx-import'></i>
         </span>
        </label>
          </form>

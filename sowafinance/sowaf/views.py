@@ -28,6 +28,17 @@ def assets(request):
 # assets form 
 def add_assests(request):
     if request.method=='POST':
+            # getting the supplier by id since its a foreign key
+        supplier_id = request.POST.get('supplier')
+        supplier=None
+        if supplier_id:
+            try:
+                supplier = Newsupplier.objects.get(pk=supplier_id)
+            except Newsupplier.DoesNotExist:
+                supplier=None
+        
+        
+        
         asset_name = request.POST.get('asset_name')
         asset_tag = request.POST.get('asset_tag')
         asset_category = request.POST.get('asset_category')
@@ -36,8 +47,7 @@ def add_assests(request):
         custodian = request.POST.get('custodian')
         asset_status = request.POST.get('asset_status')
         purchase_price = request.POST.get('purchase_price')
-    # purchase_date = request.POST.get('purchase_date')
-        supplier = request.POST.get('supplier')
+
         funding_source = request.POST.get('funding_source')
         life_span = request.POST.get('life_span')
         depreciation_method = request.POST.get('depreciation_method')
@@ -57,8 +67,7 @@ def add_assests(request):
         capitalization_date = None
         if capitalization_date_str:
             try:
-
-               capitalization_date = datetime.strptime(capitalization_date_str, '%d/%m/%Y')
+                capitalization_date = datetime.strptime(capitalization_date_str, '%d/%m/%Y')
             except ValueError:
                 capitalization_date = None  # Or handle error
 # purchase date
@@ -89,8 +98,8 @@ def add_assests(request):
             return redirect('add-asset')
         elif save_action == 'save&close':
             return redirect('assets')
-
-    return render(request, 'assets_form.html', {})
+    suppliers = Newsupplier.objects.all()
+    return render(request, 'assets_form.html', {'suppliers':suppliers})
 # editing assets
 def edit_asset(request, pk):
     asset = get_object_or_404(Newasset,pk=pk)
@@ -104,8 +113,7 @@ def edit_asset(request, pk):
         asset.asset_status = request.POST.get('asset_status',asset.asset_status)
         asset.purchase_price = request.POST.get('purchase_price',asset.purchase_price)
         asset.purchase_date = request.POST.get('purchase_date',asset.purchase_date)
-        asset.supplier = request.POST.get('supplier',asset.supplier)
-        # asset.warranty = request.POST.get('warranty',asset.warranty)
+
         asset.funding_source = request.POST.get('funding_source',asset.funding_source)
         asset.life_span = request.POST.get('life_span',asset.life_span) 
         asset.depreciation_method = request.POST.get('depreciation_method',asset.depreciation_method)
@@ -118,9 +126,18 @@ def edit_asset(request, pk):
         asset.maintenance_schedule = request.POST.get('maintenance_schedule',asset.maintenance_schedule)
         asset.insurance_details = request.POST.get('insurance_details',asset.insurance_details)
         asset.notes = request.POST.get('notes',asset.notes)
+        
+        # Handle ForeignKey (supplier)
+        supplier_id = request.POST.get('supplier')
+        if supplier_id:
+            try:
+                asset.supplier = Newsupplier.objects.get(pk=supplier_id)
+            except Newsupplier.DoesNotExist:
+                asset.supplier = None
         # handling the date 
         capitalization_date_str = request.POST.get('capitalization_date')
         if capitalization_date_str:
+            
             try:
                 asset.capitalization_date = datetime.strptime(capitalization_date_str, '%d/%m/%Y')
             except ValueError:
@@ -138,20 +155,167 @@ def edit_asset(request, pk):
             try:
                 asset.warranty = datetime.strptime(warranty_str, '%d/%m/%Y')
             except ValueError:
-                pass  # Keep the original value or handle error
-
-
-    
-    
+                pass  
+                
 # working on the files
         if 'asset_attachments' in request.FILES:
             asset.asset_attachments = request.FILES['asset_attachments']
         asset.save()
 
         return redirect('sowaf:assets')
-    return render(request, 'assets_form.html', {'asset': asset})
-# customer view
+    suppliers = Newsupplier.objects.all()
+    return render(request, 'assets_form.html', {'asset': asset,'suppliers': suppliers})
+# deleting an asset
+def delete_asset(request, pk):
+    customer = get_object_or_404(Newasset, pk=pk)
+    customer.delete()
+    return redirect('sowaf:assets')
 
+# importing assets
+def download_assets_template(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Assets Template"
+
+    headers = [
+        'asset_name','asset_tag','asset_category','asset_description','department','custodian','asset_status','purchase_price','purchase_date','supplier','warranty','funding_source','life_span','depreciation_method','residual_value','accumulated_depreciation','remaining_value','asset_account','capitalization_date','cost_center','asset_condition','maintenance_schedule','insurance_details','notes',
+    ]
+    ws.append(headers)
+
+    with NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="assets_template.xlsx"'
+        return response
+# functions to handle the date formats
+# Parse capitalization_date (multiple formats)
+def parse_capitalization_date_safe(capitalization_date):
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(str(capitalization_date), fmt).date()
+        except (ValueError, TypeError):
+            continue
+    return None
+
+# Parse purchase_date (multiple formats)
+def parse_purchase_date_safe(purchase_date):
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(str(purchase_date), fmt).date()
+        except (ValueError, TypeError):
+            continue
+    return None
+# Parse warranty (multiple formats)
+def parse_warranty_safe(warranty):
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(str(warranty), fmt).date()
+        except (ValueError, TypeError):
+            continue
+    return None
+# actual import
+def import_assets(request):
+    if request.method != 'POST' or 'excel_file' not in request.FILES:
+        messages.error(request, "No file uploaded.")
+        return redirect('sowaf:assets')
+
+    excel_file = request.FILES['excel_file']
+    file_name = excel_file.name.lower()
+
+    try:
+        if file_name.endswith('.csv'):
+            decoded_file = excel_file.read().decode('utf-8')
+            io_string = io.StringIO(decoded_file)
+            reader = csv.reader(io_string)
+            next(reader)  
+            for row in reader:
+                (
+                    asset_name,asset_tag,asset_category,asset_description,department,custodian,asset_status,purchase_price,purchase_date,supplier,warranty,funding_source,life_span,depreciation_method,residual_value,accumulated_depreciation,remaining_value,asset_account,capitalization_date,cost_center,asset_condition,maintenance_schedule,insurance_details,notes,
+                ) = row
+                capitalization_date = parse_capitalization_date_safe(capitalization_date)
+                purchase_date = parse_purchase_date_safe(purchase_date)
+                warranty = parse_warranty_safe(warranty)
+                
+                asset = Newasset.objects.create(
+                    
+                    asset_name=asset_name,
+                    asset_tag=asset_tag,
+                    asset_category=asset_category,
+                    asset_description=asset_description,
+                    department=department,
+                    custodian=custodian,
+                    asset_status=asset_status,
+                    purchase_price=purchase_price,
+                    purchase_date=purchase_date,
+                    supplier=supplier,
+                    warranty=warranty,
+                    funding_source=funding_source,
+                    life_span=life_span,
+                    depreciation_method=depreciation_method,
+                    residual_value=residual_value,
+                    accumulated_depreciation=accumulated_depreciation,
+                    remaining_value=remaining_value,
+                    asset_account=asset_account,
+                    capitalization_date=capitalization_date,
+                    cost_center=cost_center,
+                    asset_condition=asset_condition,
+                    maintenance_schedule=maintenance_schedule,
+                    insurance_details=insurance_details,
+                    notes=notes,
+                )
+
+        elif file_name.endswith('.xlsx'):
+            wb = openpyxl.load_workbook(excel_file)
+            sheet = wb.active
+
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                (
+                asset_name,asset_tag,asset_category,asset_description,department,custodian,asset_status,purchase_price,purchase_date,supplier,warranty,funding_source,life_span,depreciation_method,residual_value,accumulated_depreciation,remaining_value,asset_account,capitalization_date,cost_center,asset_condition,maintenance_schedule,insurance_details,notes,
+                ) = row
+
+                capitalization_date = parse_capitalization_date_safe(capitalization_date)
+                purchase_date = parse_purchase_date_safe(purchase_date)
+                warranty = parse_warranty_safe(warranty)
+
+                asset = Newasset.objects.create(
+                    asset_name=asset_name,
+                    asset_tag=asset_tag,
+                    asset_category=asset_category,
+                    asset_description=asset_description,
+                    department=department,
+                    custodian=custodian,
+                    asset_status=asset_status,
+                    purchase_price=purchase_price,
+                    purchase_date=purchase_date,
+                    supplier=supplier,
+                    warranty=warranty,
+                    funding_source=funding_source,
+                    life_span=life_span,
+                    depreciation_method=depreciation_method,
+                    residual_value=residual_value,
+                    accumulated_depreciation=accumulated_depreciation,
+                    remaining_value=remaining_value,
+                    asset_account=asset_account,
+                    capitalization_date=capitalization_date,
+                    cost_center=cost_center,
+                    asset_condition=asset_condition,
+                    maintenance_schedule=maintenance_schedule,
+                    insurance_details=insurance_details,
+                    notes=notes,
+                )
+        else:
+            messages.error(request, "Unsupported file type. Please upload a .csv or .xlsx file.")
+            return redirect('sowaf:assets')
+
+        messages.success(request, "asset data imported successfully.")
+        return redirect('sowaf:assets')
+
+    except Exception as e:
+        messages.error(request, f"Import failed: {str(e)}")
+        return redirect('sowaf:assets')
+
+# customer view
 def customers(request):
     customers = Newcustomer.objects.all()
 
@@ -167,9 +331,9 @@ def add_customer(request):
                 messages.error(request, "Only PNG files are allowed for the logo.")
                 return redirect(request.path)
             # restricting the photo size
-        if logo.size > 800 * 1024:
-            messages.error(request, "Logo file size must be 800KB or less.")
-            return redirect(request.path)
+            if logo.size > 1048576:
+                messages.error(request, "logo file size must not exceed 800kps.")
+                return redirect(request.path)
         customer_name =request.POST.get('name')
         company_name =request.POST.get('company')
         email =request.POST.get('email')
@@ -240,10 +404,10 @@ def edit_customer(request, pk):
                 messages.error(request, "Only PNG files are allowed for the logo.")
                 return redirect(request.path)
             # restricting the photo size
-        if logo.size > 800 * 1024:
-            messages.error(request, "Logo file size must be 800KB or less.")
-            return redirect(request.path)
-        customer.logo = logo
+            if logo.size > 1048576:
+                messages.error(request, "logo file size must not exceed 800kps.")
+                return redirect(request.path)
+            customer.logo = logo
         
         if 'attachments' in request.FILES:
 
@@ -376,10 +540,9 @@ def add_client(request):
             if not logo.name.lower().endswith('.png'):
                 messages.error(request, "Only PNG files are allowed for the logo.")
                 return redirect(request.path)
-            # restricting the photo size
-        if logo.size > 800 * 1024:
-            messages.error(request, "Logo file size must be 800KB or less.")
-            return redirect(request.path)
+            if logo.size > 1048576:
+                messages.error(request, "logo file size must not exceed 1MB.")
+                return redirect(request.path)
         company = request.POST.get('company')
         phone = request.POST.get('phone')
         company_email = request.POST.get('company_email')
@@ -450,15 +613,12 @@ def edit_client(request, pk):
             if not logo.name.lower().endswith('.png'):
                 messages.error(request, "Only PNG files are allowed for the logo.")
                 return redirect(request.path)
-            # restricting the photo size
-        if logo.size > 800 * 1024:
-            messages.error(request, "Logo file size must be 800KB or less.")
-            return redirect(request.path)
-        client.logo = logo
-
+            if logo.size > 1048576:
+                messages.error(request, "logo file size must not exceed 1MB.")
+                return redirect(request.path)
+            client.logo = logo 
         client.save()
         return redirect('sowaf:clients')  # Or wherever your list view is
-
     return render(request, 'Clients_form.html', {'client': client})
 # client delete view
 def delete_client(request, pk):
@@ -622,10 +782,9 @@ def add_employees(request):
             if not profile_picture.name.lower().endswith('.png'):
                 messages.error(request, "Only PNG files are allowed for the profile_picture.")
                 return redirect(request.path)
-            # restricting the photo size
-        if profile_picture.size > 800 * 1024:
-            messages.error(request, "profile_picture file size must be 800KB or less.")
-            return redirect(request.path)
+            if profile_picture.size > 1048576:
+                messages.error(request, "profile_picture file size must not exceed 1MB.")
+                return redirect(request.path)
         phone_number = request.POST.get('phone_number')
         email_address = request.POST.get('email_address')
         residential_address = request.POST.get('residential_address')
@@ -717,19 +876,18 @@ def edit_employee(request, pk):
         employee.additional_notes = request.POST.get('additional_notes', employee.additional_notes)
 
         # ✅ Only update profile_picture if a new one is uploaded
-        profile_picture =request.FILES.get('profile_picture')
+        profile_picture = request.FILES.get('profile_picture')
         if profile_picture:
             if not profile_picture.name.lower().endswith('.png'):
-                messages.error(request, "Only PNG files are allowed for the profile_picture.")
+                messages.error(request, "Only PNG files are allowed for the profile picture.")
                 return redirect(request.path)
-            # restricting the photo size
-        if profile_picture.size > 800 * 1024:
-            messages.error(request, "profile_picture file size must be 800KB or less.")
-            return redirect(request.path)
-        employee.profile_picture = profile_picture
+            if profile_picture.size > 1048576:
+                messages.error(request, "Profile picture file size must not exceed 1MB.")
+                return redirect(request.path)
+            employee.profile_picture = profile_picture
         
         if 'doc_attachments' in request.FILES:
-           employee.doc_attachments = request.FILES['doc_attachments']
+            employee.doc_attachments = request.FILES['doc_attachments']
 
         employee.save()
         return redirect('sowaf:employees')  # Or wherever your list view is
@@ -1030,18 +1188,16 @@ def supplier(request):
     return render(request, 'Supplier.html', {'suppliers':suppliers})
 
 #add new supplier form view
-def add_suppliers(request):
+def add_supplier(request):
     if request.method == 'POST':
         logo =request.FILES.get('logo')
         if logo:
             if not logo.name.lower().endswith('.png'):
                 messages.error(request, "Only PNG files are allowed for the logo.")
                 return redirect(request.path)
-            # restricting the photo size
-        if logo.size > 800 * 1024:
-            messages.error(request, "Logo file size must be 800KB or less.")
-            return redirect(request.path)
-    
+            if logo.size > 1048576:
+                messages.error(request, "logo file size must not exceed 1MB.")
+                return redirect(request.path)
         company_name = request.POST.get('company_name')
         supplier_type = request.POST.get('supplier_type')
         status = request.POST.get('status')
@@ -1068,6 +1224,8 @@ def add_suppliers(request):
         tax_rate = request.POST.get('tax_rate')
         attachments =request.FILES.get('attachments')
         new_supplier = Newsupplier(logo=logo,company_name=company_name,supplier_type=supplier_type,status=status,contact_person=contact_person,contact_position=contact_position, contact=contact,email=email,open_balance=open_balance,website=website,address1=address1,address2=address2,city=city,state=state,zip_code=zip_code,country=country,bank=bank,bank_account=bank_account,bank_branch=bank_branch,payment_terms=payment_terms,currency=currency,payment_method=payment_method,tin=tin,reg_number=reg_number,tax_rate=tax_rate,attachments=attachments)
+
+        # saving the data in the data base
         new_supplier.save()
          # adding save actions
         save_action = request.POST.get('save_action')
@@ -1079,48 +1237,50 @@ def add_suppliers(request):
 # editing supplier information
 def edit_supplier(request, pk):
     supplier = get_object_or_404(Newsupplier, pk=pk)
+
     if request.method == 'POST':
-        supplier.company_name = request.POST.get('company_name',supplier.company_name)
-        supplier.supplier_type = request.POST.get('supplier_type',supplier.supplier_type)
-        supplier.status = request.POST.get('status',supplier.status)
-        supplier.contact_person = request.POST.get('contact_person',supplier.contact_person)
-        supplier.contact_position = request.POST.get('contact_position',supplier.contact_position)
-        supplier.contact = request.POST.get('contact',supplier.contact)
-        supplier.email = request.POST.get('email',supplier.email)
-        supplier.open_balance = request.POST.get('open_balance',supplier.open_balance)
-        supplier.website = request.POST.get('website',supplier.website)
-        supplier.address1 = request.POST.get('address1',supplier.address1)
-        supplier.address2 = request.POST.get('address2',supplier.address2)
-        supplier.city = request.POST.get('city',supplier.city)
-        supplier.state = request.POST.get('state',supplier.state)
-        supplier.zip_code = request.POST.get('zip_code',supplier.zip_code)
-        supplier.country = request.POST.get('country',supplier.country)
-        supplier.bank = request.POST.get('bank',supplier.bank)
-        supplier.bank_account = request.POST.get('bank_account',supplier.bank_account)
-        supplier.bank_branch = request.POST.get('bank_branch',supplier.bank_branch)
-        supplier.payment_terms = request.POST.get('payment_terms',supplier.payment_terms)
-        supplier.currency = request.POST.get('currency',supplier.currency)
-        supplier.payment_method = request.POST.get('payment_method',supplier.payment_method)
-        supplier.tin = request.POST.get('tin',supplier.tin)
-        supplier.reg_number = request.POST.get('reg_number',supplier.reg_number)
-        supplier.tax_rate = request.POST.get('tax_rate',supplier.tax_rate )
-        
+        supplier.company_name = request.POST.get('company_name', supplier.company_name)
+        supplier.supplier_type = request.POST.get('supplier_type', supplier.supplier_type)
+        supplier.status = request.POST.get('status', supplier.status)
+        supplier.contact_person = request.POST.get('contact_person', supplier.contact_person)
+        supplier.contact_position = request.POST.get('contact_position', supplier.contact_position)
+        supplier.contact = request.POST.get('contact', supplier.contact)
+        supplier.email = request.POST.get('email', supplier.email)
+        supplier.open_balance = request.POST.get('open_balance', supplier.open_balance)
+        supplier.website = request.POST.get('website', supplier.website)
+        supplier.address1 = request.POST.get('address1', supplier.address1)
+        supplier.address2 = request.POST.get('address2', supplier.address2)
+        supplier.city = request.POST.get('city', supplier.city)
+        supplier.state = request.POST.get('state', supplier.state)
+        supplier.zip_code = request.POST.get('zip_code', supplier.zip_code)
+        supplier.country = request.POST.get('country', supplier.country)
+        supplier.bank = request.POST.get('bank', supplier.bank)
+        supplier.bank_account = request.POST.get('bank_account', supplier.bank_account)
+        supplier.bank_branch = request.POST.get('bank_branch', supplier.bank_branch)
+        supplier.payment_terms = request.POST.get('payment_terms', supplier.payment_terms)
+        supplier.currency = request.POST.get('currency', supplier.currency)
+        supplier.payment_method = request.POST.get('payment_method', supplier.payment_method)
+        supplier.tin = request.POST.get('tin', supplier.tin)
+        supplier.bank_account = request.POST.get('bank_account', supplier.bank_account)
+        supplier.bank_branch = request.POST.get('bank_branch', supplier.bank_branch)
+        supplier.reg_number = request.POST.get('reg_number', supplier.reg_number)
+        supplier.tax_rate = request.POST.get('tax_rate', supplier.tax_rate)
+
+        # ✅ Only update logo if a new one is uploaded
         logo =request.FILES.get('logo')
         if logo:
             if not logo.name.lower().endswith('.png'):
                 messages.error(request, "Only PNG files are allowed for the logo.")
                 return redirect(request.path)
-            # restricting the photo size
-        if logo.size > 800 * 1024:
-            messages.error(request, "Logo file size must be 800KB or less.")
-            return redirect(request.path)
-        supplier.logo = logo
-        
-        if request.FILES.get('attachments'):
-            supplier.attachments = request.FILES.get('attachments')
+            if logo.size > 1048576:
+                messages.error(request, "logo file size must not exceed 1MB.")
+                return redirect(request.path)
+            supplier.logo = logo
+        if 'attachments' in request.FILES:
+           supplier.attachments = request.FILES['attachments']
 
         supplier.save()
-        return redirect('sowaf:suppliers')
+        return redirect('sowaf:suppliers')  # Or wherever your list view is
 
     return render(request, 'suppliers_entry_form.html', {'supplier': supplier})
 
@@ -1129,6 +1289,135 @@ def delete_supplier(request, pk):
     supplier = get_object_or_404(Newsupplier, pk=pk)
     supplier.delete()
     return redirect('sowaf:suppliers')    
+
+# importing suppliers
+def download_suppliers_template(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Suppliers Template"
+
+    headers = [
+        'logo','company_name','supplier_type','status','contact_person','contact_position', 'contact','email','open_balance','website','address1','address2','city','state','zip_code','country','bank','bank_account','bank_branch','payment_terms','currency','payment_method','tin','reg_number','tax_rate',
+    ]
+    ws.append(headers)
+
+    with NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        response = HttpResponse(tmp.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="suppliers_template.xlsx"'
+        return response
+def handle_logo_upload(supplier, logo):
+    if logo:
+        image_path = os.path.join(settings.MEDIA_ROOT, 'uploads', logo)
+        if os.path.exists(image_path):
+            with open(image_path, 'rb') as f:
+                supplier.logo.save(logo, File(f), save=True)
+        else:
+            messages.warning(None, f"Image file '{logo}' not found.")
+
+def import_suppliers(request):
+    if request.method != 'POST' or 'excel_file' not in request.FILES:
+        messages.error(request, "No file uploaded.")
+        return redirect('sowaf:suppliers')
+
+    excel_file = request.FILES['excel_file']
+    file_name = excel_file.name.lower()
+
+    try:
+        if file_name.endswith('.csv'):
+            decoded_file = excel_file.read().decode('utf-8')
+            io_string = io.StringIO(decoded_file)
+            reader = csv.reader(io_string)
+            next(reader)
+            for row in reader:
+                (
+                    logo, company_name, supplier_type, status, contact_person, contact_position, contact, email, open_balance, website, address1, address2, city, state, zip_code, country, bank, bank_account,bank_branch,payment_terms,currency,payment_method,tin,reg_number,tax_rate,
+                )
+                
+                logo = logo.strip() if logo else ''
+
+
+                supplier = Newsupplier.objects.create(
+                    logo=logo,
+                    company_name=company_name,
+                    supplier_type=supplier_type,
+                    status=status,
+                    contact_person=contact_person,
+                    contact_position=contact_position, 
+                    contact=contact,
+                    email=email,
+                    open_balance=open_balance,
+                    website=website,
+                    address1=address1,
+                    address2=address2,
+                    city=city,
+                    state=state,
+                    zip_code=zip_code,
+                    country=country,
+                    bank=bank,
+                    bank_account=bank_account,
+                    bank_branch=bank_branch,
+                    payment_terms=payment_terms,
+                    currency=currency,
+                    payment_method=payment_method,
+                    tin=tin,
+                    reg_number=reg_number,
+                    tax_rate=tax_rate,
+                )
+                handle_logo_upload(supplier, logo)
+
+        elif file_name.endswith('.xlsx'):
+            wb = openpyxl.load_workbook(excel_file)
+            sheet = wb.active
+
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                (
+                logo, company_name, supplier_type, status, contact_person, contact_position, contact, email, open_balance, website, address1, address2, city, state, zip_code, country, bank, bank_account,bank_branch,payment_terms,currency,payment_method,tin,reg_number,tax_rate,
+                ) = row
+
+
+                logo = logo.strip() if logo else ''
+
+                supplier = Newsupplier.objects.create(
+                    logo=logo,
+                    company_name=company_name,
+                    supplier_type=supplier_type,
+                    status=status,
+                    contact_person=contact_person,
+                    contact_position=contact_position, 
+                    contact=contact,
+                    email=email,
+                    open_balance=open_balance,
+                    website=website,
+                    address1=address1,
+                    address2=address2,
+                    city=city,
+                    state=state,
+                    zip_code=zip_code,
+                    country=country,
+                    bank=bank,
+                    bank_account=bank_account,
+                    bank_branch=bank_branch,
+                    payment_terms=payment_terms,
+                    currency=currency,
+                    payment_method=payment_method,
+                    tin=tin,
+                    reg_number=reg_number,
+                    tax_rate=tax_rate,
+                )
+                handle_logo_upload(supplier, logo)
+
+        else:
+            messages.error(request, "Unsupported file type. Please upload a .csv or .xlsx file.")
+            return redirect('sowaf:suppliers')
+
+        messages.success(request, "supplier data imported successfully.")
+        return redirect('sowaf:suppliers')
+
+    except Exception as e:
+        messages.error(request, f"Import failed: {str(e)}")
+        return redirect('sowaf:suppliers')
 # tasks view
 def tasks(request):
 

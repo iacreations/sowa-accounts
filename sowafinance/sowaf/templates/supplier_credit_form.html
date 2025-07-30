@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,8 +98,8 @@
     </div>
 
     <div class="attachments">
-      {% if customer.attachments %}
-      <p>Existing file: <a href="{{ customer.attachments.url }}" target="_blank">Download</a></p>
+      {% if supplier.attachments %}
+      <p>Existing file: <a href="{{ supplier.attachments.url }}" target="_blank">Download</a></p>
       {% endif %}
       <input type="file" multiple />
       <i class='bx bx-upload' style="font-size: 30px;"></i>

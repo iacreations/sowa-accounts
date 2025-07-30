@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fixed Asset Register Form</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif; font-size: 14px; }
@@ -62,8 +64,21 @@
         <div class="form-grid">
           <div class="form-group"><label>Purchase Price *</label><input name="purchase_price" value="{{ asset.purchase_price|default_if_none:'' }}" type="number" required></div>
           <div class="form-group"><label>Purchase Date *</label><input name="purchase_date" value="{{ asset.purchase_date|date:'d/m/Y'|default_if_none:'' }}" type="text" placeholder="dd/mm/yyyy"></div>
-          <div class="form-group"><label>Supplier / Vendor *</label><input name="supplier" value="{{ asset.supplier|default_if_none:'' }}" type="text" required></div>
-          <div class="form-group"><label>Warranty Expiry Date</label><input name="warranty" value="{{ asset.warranty|date:'d/m/Y'|default_if_none:'' }}" type="text" placeholder="dd/mm/yyyy"></div>
+          <div class="form-group">
+            <label>Supplier / Vendor *</label>
+            <select name="supplier">
+            <option value="">-- Select Supplier --</option>
+              {% for supplier in suppliers %}
+               <option value="{{ supplier.id }}" {% if asset and asset.supplier.id == supplier.id %}selected{% endif %}>
+              {{ supplier.company_name }}
+                 </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+          <label>Warranty expiry date</label>
+          <input name="warranty" value="{{ asset.warranty|date:'d/m/Y'|default_if_none:'' }}" type="text" id="date_input" placeholder="dd/mm/yyyy" class="form-control">
+          </div>
           <div class="form-group"><label>Funding Source</label><input name="funding_source" value="{{ asset.funding_source|default_if_none:'' }}" type="text"></div>
         </div>
       </div>
@@ -73,10 +88,10 @@
         <div class="form-grid">
           <div class="form-group"><label>Asset Life (Years) *</label><input name="life_span" value="{{ asset.life_span|default_if_none:'' }}" type="number" required></div>
           <div class="form-group"><label>Depreciation Method *</label>
-            <select  name="depreciation_method" value="{{ asset.depreciation_method|default_if_none:'' }}">
-              <option name="depreciation_method" value="{{ asset.depreciation_method|default_if_none:'' }}">----select----</option>
-              <option name="depreciation_method" value="{{ asset.depreciation_method|default_if_none:'' }}">Straight Line</option>
-              <option name="depreciation_method" value="{{ asset.depreciation_method|default_if_none:'' }}">Reducing Balance</option>
+            <select  name="depreciation_method" >
+              <option name="depreciation_method">----select----</option>
+              <option name="depreciation_method" value="Straight Line" {% if asset.depreciation_method == "Straight Line" %}selected{% endif %}>Straight Line</option>
+              <option name="depreciation_method" value="Reducing Balance" {% if asset.depreciation_method == "Reducing Balance" %}selected{% endif %}>Reducing Balance</option>
             </select>
           </div>
           <div class="form-group"><label>Residual Value</label><input name="residual_value" value="{{ asset.residual_value|default_if_none:'' }}" type="number"></div>
@@ -90,8 +105,8 @@
         <div class="form-grid">
           <div class="form-group"><label>Asset Account *</label><input name="asset_account" value="{{ asset.asset_account|default_if_none:'' }}" type="text" required></div>
           <div class="form-group">
-            <label>Capitalization Date *</label>
-            <input name="capitalization_date" value="{{ asset.capitalization_date|date:'d/m/Y'|default_if_none:'' }}" type="text" id="date_input" placeholder="dd/mm/yyyy">
+          <label>Capitalization Date *</label>
+          <input name="capitalization_date" value="{{ asset.capitalization_date|date:'d/m/Y'|default_if_none:'' }}" type="text" id="date_input" placeholder="dd/mm/yyyy" class="form-control">
           </div>
           <div class="form-group"><label>Cost Center / Business Unit</label><input name="cost_center" value="{{ asset.cost_center|default_if_none:'' }}" type="text"></div>
         </div>
@@ -103,14 +118,18 @@
           <div class="form-group"><label>Asset Condition</label><input name="asset_condition" value="{{ asset.asset_condition|default_if_none:'' }}" type="text"></div>
           <div class="form-group"><label>Maintenance Schedule</label><input name="maintenance_schedule" value="{{ asset.maintenance_schedule|default_if_none:'' }}" type="text"></div>
           <div class="form-group"><label>Insurance Details</label><input name="insurance_details" value="{{ asset.insurance_details|default_if_none:'' }}" type="text"></div>
-          <div class="form-group"><label>Notes / Remarks</label><textarea rows="3" name="notes" value="{{ asset.notes|default_if_none:'' }}"></textarea></div>
+          <div class="form-group"><label>Notes / Remarks</label><textarea rows="3" name="notes">{{ asset.notes|default_if_none:'' }}</textarea></div>
           <div class="form-group">
             <label>Attachments</label>
             <div class="attachments">
-              {% if customer.attachments %}
-               <p>Existing file: <a href="{{ asset.asset_attachments.url }}" target="_blank">Download</a></p>
-               {% endif %}
-              <input name="asset_attachments" value="{{ asset.asset_attachments|default_if_none:'' }}" type="file" multiple />
+              {% if asset.asset_attachments %}
+            <p>Existing file: 
+            <a href="{{ asset.asset_attachments.url }}" target="_blank" style="color: #007bff;">
+              {{ asset.asset_attachments.name|cut:'attachments/' }}
+             </a>
+              </p>
+            {% endif %}
+              <input name="asset_attachments" type="file" multiple />
               <i class='bx bx-upload' style="font-size: 30px;"></i>
               <p>Drag/Drop files or click to upload</p>
             </div>

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Supplier Details</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
     body { background: #f4f6f8; padding: 30px; }
@@ -107,13 +108,13 @@
   {% include 'includes/sidebar.html' %}
   <div class="container">
     <h2>Supplier Details</h2>
-<form method='post' action="{% if supplier %}{% url 'sowaf:edit-supplier' supplier.id %}{% else %}{% url 'sowaf:add-suppliers' %}{% endif %}" enctype= 'multipart/form-data'>
+<form method='post' action="{% if supplier %}{% url 'sowaf:edit-supplier' supplier.id %}{% else %}{% url 'sowaf:add-supplier' %}{% endif %}" enctype= 'multipart/form-data'>
   <div class="section">
         <div class="collapsible-header">Customer Logo</div>
         <div class="collapsible-content form-row">
           <div class="field">
             <label >Upload Logo</label>
-            {% if customer.logo %}
+            {% if supplier.logo %}
              <p>Existing logo</p>
                <img src="{{ supplier.logo.url }}" alt="logo" width="100" />
               {% endif %}
@@ -197,7 +198,7 @@
       <div class="collapsible-content">
         <div class="header">
           <div class="field"><label for="tin">VAT / Tax ID *</label><input type="text" name="tin" value="{{ supplier.tin|default_if_none:'' }}" required></div>
-          <div class="field"><label for="reg_number">Registration / License No</label><input type="text" name="reg_number"></div>
+          <div class="field"><label for="reg_number">Registration / License No</label><input type="text" name="reg_number" value="{{ supplier.reg_number|default_if_none:'' }}"></div>
           <div class="field"><label for="tax_rate">Tax Withholding Rate (%)</label><input type="number" name="tax_rate" value="{{ supplier.tax_rate|default_if_none:'' }}"></div>
         </div>
       </div>
@@ -205,9 +206,13 @@
 
     <!-- Attachments -->
     <div class="attachments">
-      {% if customer.attachments %}
-       <p>Existing file: <a href="{{ supplier.attachments.url }}" target="_blank">Download</a></p>
-      {% endif %}
+            {% if supplier.attachments %}
+            <p>Existing file: 
+            <a href="{{ supplier.attachments.url }}" target="_blank" style="color: #007bff;">
+              {{ supplier.attachments.name|cut:'attachments/' }}
+             </a>
+              </p>
+            {% endif %}
       <input type="file" multiple name="attachments">
       <i class='bx bx-upload' style="font-size: 24px;"></i>
       <p>Click or drag files here to upload documents (e.g. agreements)</p>

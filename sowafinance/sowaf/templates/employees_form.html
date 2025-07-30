@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employee Entry Form</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{% static 'sowaf/images/favicon.ico' %}">
   <style>
     * {
       margin: 0; padding: 0; box-sizing: border-box;
@@ -218,12 +220,12 @@
     <div class="field"><label>Tax ID / TIN *</label><input name="tin_number" value="{{ employee.tin_number|default_if_none:'' }}" type="text" required></div>
     <div class="field">
       <label>Profile Picture</label>
-       {% if customer.logo %}
+       {% if employee.profile_picture %}
              <p>Existing picture</p>
-               <img src="{{ employee.profile_picture.url }}" alt="Attachment" width="100" />
+               <img src="{{ employee.profile_picture.url }}" alt="profile picture" width="100" />
               {% endif %}
       <div class="profile-upload">
-        <input name="profile_picture" type="file" accept="image/*" />
+        <input name="profile_picture" type="file" accept="image/png" />
         <i class='bx bx-upload'></i>
         <p>Upload</p>
       </div>
@@ -322,9 +324,13 @@
 
   <!-- File Upload Section for Documents -->
   <div class="attachments-doc">
-      {% if employee.doc_attachments %}
-  <p>Existing file: <a href="{{ employee.doc_attachments.url }}" target="_blank">Download</a></p>
-{% endif %} 
+                  {% if employee.doc_attachments %}
+            <p>Existing file: 
+            <a href="{{ employee.doc_attachments.url }}" target="_blank" style="color: #007bff;">
+              {{ employee.doc_attachments.name|cut:'attachments/' }}
+             </a>
+              </p>
+            {% endif %}
     <input name="doc_attachments"type="file" multiple>
     <i class='bx bx-upload' style="font-size: 24px;"></i>
     <p>Click or drag files here to upload documents (CV, ID, Contracts)</p>
