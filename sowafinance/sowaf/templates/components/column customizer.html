@@ -1,0 +1,24 @@
+<div id="columnCustomizerModal" class="modal" style="display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);">
+
+  <div class="modal-content" style="background: white; width: 300px; margin: 100px auto; padding: 20px; border-radius: 8px; position: relative;">
+    <h3 style="margin-top: 0;">Customize Columns</h3>
+
+    <form id="column-customizer-form">
+      {% for column in available_columns %}
+        <div style="margin-bottom: 10px;">
+          <label style="cursor: pointer;">
+            <input 
+              type="checkbox" 
+              name="columns" 
+              value="{{ column.key }}" 
+              {% if column.key in visible_columns %}checked{% endif %}>
+            {{ column.label }}
+          </label>
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="button" style="margin-top: 15px; background-color: #39B54B; color: white; padding: 8px 12px; border: none; border-radius: 4px;">Apply</button>
+      <button type="button" onclick="closeColumnCustomizer()" style="margin-top: 15px; margin-left: 10px; padding: 8px 12px; border: none; background: gray; color: white; border-radius: 4px;">Cancel</button>
+    </form>
+  </div>
+</div>

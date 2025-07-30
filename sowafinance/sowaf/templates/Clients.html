@@ -37,10 +37,10 @@
           </span>
         </button>
       </a>
-        <button class="button">
-          <span class="button_text">CUSTOMIZE</span>
-          <span class="button_icon">
-            <i class='bx bxs-customize' ></i>
+        <button class="button" onclick="openColumnCustomizer()">
+         <span class="button_text">CUSTOMIZE</span>
+         <span class="button_icon">
+         <i class='bx bxs-customize'></i>
           </span>
         </button>
     </div>
@@ -112,4 +112,22 @@
         </button>
       </a>
     </div>
+
+<script>
+  function openColumnCustomizer() {
+    document.getElementById('columnCustomizerModal').style.display = 'block';
+  }
+
+  function closeColumnCustomizer() {
+    document.getElementById('columnCustomizerModal').style.display = 'none';
+  }
+
+  // Optional: close modal when clicking outside
+  window.onclick = function(event) {
+    const modal = document.getElementById('columnCustomizerModal');
+    if (event.target == modal) {
+      closeColumnCustomizer();
+    }
+  }
+</script>
  {% include 'includes/footer.html' %}

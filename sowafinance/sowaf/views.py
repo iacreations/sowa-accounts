@@ -1069,19 +1069,7 @@ def import_employees(request):
     except Exception as e:
         messages.error(request, f"Import failed: {str(e)}")
         return redirect('sowaf:employees')
-# expenses view
-def expenses(request):
 
-    return render(request, 'Expenses.html', {})
-
-# millecious view
-def miscellaneous(request):
-
-    return render(request, 'Miscellaneous.html', {})
-# reports view 
-def reports(request):
-
-    return render(request, 'Reports.html', {})
 # sales view
 def sales(request):
     invoices = Newinvoice.objects.all().prefetch_related('invoiceitem_set')  # Optimized for related items
@@ -1165,21 +1153,6 @@ def add_invoice(request):
 
     return render(request, 'invoice_form.html', {'customers': customers})
 
-# receipt form view
-
-def add_receipt(request):
-    
-    return render(request, 'Receipt_form.html', {})
-# receive payment form view
-
-def add_payment(request):
-    
-    return render(request, 'receive_payment_form.html', {})
-#add new product form view
-
-def add_products(request):
-    
-    return render(request, 'Products_and_services_form.html', {})
 
 # supplier view
 def supplier(request):
@@ -1426,3 +1399,33 @@ def tasks(request):
 def taxes(request):
 
     return render(request, 'Taxes.html', {})
+
+# receipt form view
+
+def add_receipt(request):
+    
+    return render(request, 'Receipt_form.html', {})
+# receive payment form view
+
+def add_payment(request):
+    
+    return render(request, 'receive_payment_form.html', {})
+#add new product form view
+
+def add_products(request):
+    
+    return render(request, 'Products_and_services_form.html', {})
+
+# expenses view
+def expenses(request):
+
+    return render(request, 'Expenses.html', {})
+
+# millecious view
+def miscellaneous(request):
+
+    return render(request, 'Miscellaneous.html', {})
+# reports view 
+def reports(request):
+
+    return render(request, 'Reports.html', {})
